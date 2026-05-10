@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>HAUTE-SHOP | Créer votre compte</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-indigo: #4F46E5;
+            --brand-dark-blue: #0f428e;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--slate-50);
+            color: var(--slate-800);
+        }
+        
+        .text-slate-400 { color: var(--slate-400); }
+        .text-slate-500 { color: var(--slate-500); }
+        .text-slate-600 { color: var(--slate-600); }
+        .text-slate-900 { color: var(--slate-900); }
+        
+        .btn-primary-custom {
+            background-color: var(--brand-dark-blue);
+            border-color: var(--brand-dark-blue);
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(15, 66, 142, 0.39);
+            border-radius: 1rem;
+            padding: 0.875rem 1rem;
+            font-weight: 600;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: #0a2e5c;
+            border-color: #0a2e5c;
+            color: white;
+        }
+        
+        .text-brand-blue {
+            color: var(--brand-dark-blue);
+        }
+        
+        .main-viewport {
+            min-height: calc(100vh - 40px);
+        }
+        
+        .form-control-custom {
+            border-radius: 1rem;
+            padding: 0.875rem 0.875rem 0.875rem 3rem;
+            background-color: rgba(248, 250, 252, 0.5);
+            border-color: var(--slate-100);
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+        
+        .form-control-custom:focus {
+            border-color: var(--brand-indigo);
+            box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+            background-color: white;
+        }
+        
+        .form-control-custom::placeholder {
+            color: var(--slate-400);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate-400);
+            pointer-events: none;
+            z-index: 3;
+        }
+        
+        .input-group-wrapper {
+            position: relative;
+        }
+        
+        .rounded-4 {
+            border-radius: 2.5rem !important;
+        }
+        
+        .rounded-5 {
+            border-radius: 2rem !important;
+        }
+        
+        .visual-container {
+            border-radius: 2rem;
+            overflow: hidden;
+        }
+        
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+        
+        .text-indigo-600 {
+            color: var(--brand-indigo);
+        }
+        
+        .footer-height {
+            height: 40px;
+        }
+        
+        @media (max-width: 991.98px) {
+            .main-viewport {
+                min-height: auto;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .form-control-custom {
+                font-size: 1rem;
+            }
+        }
+        
+        .support-link {
+            color: var(--slate-400);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .support-link:hover {
+            color: var(--slate-600);
+        }
+        
+        .shadow-card {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- BEGIN: Main Page Wrapper -->
+    <main class="flex-grow-1 d-flex align-items-center justify-content-center p-3 p-md-5 main-viewport">
+        <div class="container-fluid" style="max-width: 1400px;">
+            <div class="row g-0 bg-white rounded-4 overflow-hidden shadow-card">
+                <!-- BEGIN: Left Column (Form) -->
+                <div class="col-md-6 d-flex flex-column justify-content-center px-4 px-lg-5 py-5 bg-white">
+                    <!-- Logo -->
+                    <div class="mb-4">
+                        <h1 class="brand-logo">
+                            <span class="text-indigo-600">HAUTE</span><span class="text-secondary">-</span><span class="text-indigo-600">SHOP</span>
+                        </h1>
+                    </div>
+                    
+                    <!-- Header Text -->
+                    <div class="mb-4">
+                        <h2 class="display-6 fw-bold text-slate-900 mb-2">Créer votre compte</h2>
+                        <p class="text-slate-500 fs-5">Inscrivez-vous pour accéder à votre tableau de bord personnalisé.</p>
+                    </div>
+                    
+                    <!-- Form Fields -->
+                    <form action="#" method="POST">
+                        <!-- Full Name -->
+                        <div class="input-group-wrapper mb-3">
+                            <span class="input-icon">
+                                <i class="bi bi-person"></i>
+                            </span>
+                            <input class="form-control form-control-custom" placeholder="Nom Complet" required type="text"/>
+                        </div>
+                        
+                        <!-- Email Address -->
+                        <div class="input-group-wrapper mb-3">
+                            <span class="input-icon">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input class="form-control form-control-custom" placeholder="Adresse E-mail" required type="email"/>
+                        </div>
+                        
+                        <!-- Password -->
+                        <div class="input-group-wrapper mb-3">
+                            <span class="input-icon">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input class="form-control form-control-custom" placeholder="Mot de Passe" required type="password"/>
+                        </div>
+                        
+                        <!-- Confirm Password -->
+                        <div class="input-group-wrapper mb-4">
+                            <span class="input-icon">
+                                <i class="bi bi-lock-fill"></i>
+                            </span>
+                            <input class="form-control form-control-custom" placeholder="Confirmer le Mot de Passe" required type="password"/>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="mb-4">
+                            <a href="Dashboard.html" class="btn btn-primary-custom w-100 fs-6" type="submit">
+                                <span>S'inscrire</span>
+                                <i class="bi bi-box-arrow-in-right"></i>
+                            </a>
+                            <!-- ORIGINAL   -->
+                            <!-- <button class="btn btn-primary-custom w-100 fs-6" type="submit">
+                                Créer le compte
+                            </button> -->
+                        </div>
+                    </form>
+                    
+                    <!-- Login Redirect -->
+                    <div class="mb-4 text-slate-600 small">
+                        Déjà un compte ? <a class="text-brand-blue fw-semibold text-decoration-none" href="login.html">Connectez-vous.</a>
+                    </div>
+                    
+                    <!-- Contact Info -->
+                    <div class="mt-auto pt-4 d-flex flex-column flex-sm-row gap-3">
+                        <a class="support-link d-flex align-items-center gap-2" href="mailto:support@geoerp.fr">
+                            <i class="bi bi-envelope"></i>
+                            support@geoerp.fr
+                        </a>
+                        <a class="support-link d-flex align-items-center gap-2" href="tel:+330123456789">
+                            <i class="bi bi-telephone"></i>
+                            +33 (0)1 23 45 67 89
+                        </a>
+                    </div>
+                </div>
+                <!-- END: Left Column -->
+                
+                <!-- BEGIN: Right Column (Visual) -->
+                <div class="col-md-6 d-none d-md-block p-2">
+                    <div class="visual-container h-100 w-100">
+                        <img alt="Person working on laptop" class="img-fluid w-100 h-100 object-fit-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uhLZJJ1JkSZK1CWnUHxGsrp_u0YLVp0vjeVhFNGia1pXFJUZU1Nb0jjR8feh6VwnkKgw_OJJBb5qIkdfWUhNwsbP2kX3Mq0MWLqrBOfai3ZvZMbC_0ynCArqjMNfySn7eLtrXQEcKmBwcb8NUPDN4DSIY-SFZGkm4B8Is4tvxke4LYZJ6Ee-TkcJ4klOypKr2q9g5l2plv8iCoxNcWe7LnT2eolb5aFgJV_Rn8Vbif4OFXRZhmYyMUYD3BVvZBRwmVBlnW8hDkY"/>
+                    </div>
+                </div>
+                <!-- END: Right Column -->
+            </div>
+        </div>
+    </main>
+    <!-- END: Content Area -->
+    
+    <!-- BEGIN: System Footer -->
+    <footer class="footer-height px-3 px-md-4 d-flex align-items-center justify-content-between border-top bg-white">
+        <div class="text-secondary" style="font-size: 0.625rem; font-weight: 500;">Management System</div>
+        <div class="text-secondary" style="font-size: 0.625rem; font-weight: 500;">V 1.1.0</div>
+    </footer>
+    <!-- END: System Footer -->
+    
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

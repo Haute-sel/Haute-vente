@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Haut-Shop - Gestion des Sites</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary: #3b42e3;
+            --primary-hover: #2d35b8;
+            --sidebar-width: 16rem;
+            --topbar-height: 4rem;
+            --badge-blue-bg: #e0e7ff;
+            --badge-blue-text: #3730a3;
+            --badge-orange-bg: #ffedd5;
+            --badge-orange-text: #9a3412;
+            --badge-active-bg: #d1fae5;
+            --badge-active-text: #065f46;
+            --badge-inactive-bg: #fee2e2;
+            --badge-inactive-text: #991b1b;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fb;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: white;
+            border-right: 1px solid #e5e7eb;
+            height: 100vh;
+            flex-shrink: 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0.75rem;
+            color: #4b5563;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.15s ease;
+            font-size: 0.875rem;
+        }
+        
+        .sidebar-link:hover { background-color: #f9fafb; }
+        
+        .sidebar-link.active {
+            background-color: #eff6ff;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .sidebar-link.danger { color: #ef4444; }
+        .sidebar-link.danger:hover { background-color: #fef2f2; }
+        
+        .nav-section-title {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .topbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            height: var(--topbar-height);
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+            z-index: 1030;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--topbar-height);
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 1px solid #f3f4f6;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        
+        .icon-circle {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .badge-type {
+            font-size: 0.625rem;
+            font-weight: 800;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+        }
+        
+        .badge-magasin { background-color: var(--badge-blue-bg); color: var(--badge-blue-text); }
+        .badge-depot { background-color: var(--badge-orange-bg); color: var(--badge-orange-text); }
+        .badge-bar { background-color: #ffe4e6; color: #be123c; }
+        
+        .table-custom th {
+            font-size: 0.625rem;
+            font-weight: 800;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background-color: #f9fafb;
+            border-bottom: 1px solid #f3f4f6;
+            padding: 1rem 1.5rem;
+        }
+        
+        .table-custom td {
+            padding: 1rem 1.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .table-custom tbody tr { transition: background-color 0.15s ease; }
+        .table-custom tbody tr:hover { background-color: #f9fafb; }
+        
+        .pagination-btn {
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 1px solid #e5e7eb;
+            background: white;
+            color: #4b5563;
+            transition: all 0.15s ease;
+        }
+        
+        .pagination-btn:hover { background-color: #f9fafb; }
+        .pagination-btn.active { background-color: var(--primary); color: white; border-color: var(--primary); }
+        
+        .btn-primary-custom {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(59, 66, 227, 0.2);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(59, 66, 227, 0.3);
+        }
+        
+        .btn-primary-custom:active { transform: scale(0.95); }
+        
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.5625rem;
+            width: 1.125rem;
+            height: 1.125rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            font-weight: 700;
+        }
+        
+        .modal-content-custom {
+            border-radius: 1rem;
+            border: none;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .form-label-custom {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.375rem;
+        }
+        
+        .form-control-custom, .form-select-custom {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            background-color: #f9fafb;
+            transition: all 0.2s ease;
+        }
+        
+        .form-control-custom:focus, .form-select-custom:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(59, 66, 227, 0.15);
+            background-color: white;
+        }
+        
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .modal.fade .modal-dialog { animation: modalSlideUp 0.3s ease-out; }
+        
+        @media (max-width: 991.98px) {
+            .sidebar { left: -100%; transition: left 0.3s ease; }
+            .sidebar.show { left: 0; }
+            .topbar { left: 0; }
+            .main-content { margin-left: 0; }
+            .sidebar-backdrop {
+                display: none; position: fixed; top: 0; left: 0;
+                width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1039;
+            }
+            .sidebar-backdrop.show { display: block; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+    <!-- BEGIN: Sidebar -->
+    <aside class="sidebar d-flex flex-column" id="sidebar">
+        <div class="p-4">
+            <h1 class="h4 fw-bold d-flex align-items-center mb-0">
+                <span class="text-primary">HAUT</span><span class="text-secondary">-SHOP</span>
+            </h1>
+        </div>
+        <div class="px-3 py-2 flex-grow-1 overflow-auto">
+            <p class="nav-section-title">Navigation</p>
+            <nav class="d-flex flex-column gap-1">
+                <a class="sidebar-link" href="Dashboard.html">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-house-door"></i>
+                        <span class="fw-medium">Tableau de bord</span>
+                    </div>
+                    <i class="bi bi-chevron-right small text-secondary"></i>
+                </a>
+                <a class="sidebar-link active" href="gestionSites.html">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-building"></i>
+                        <span class="fw-medium">Sites</span>
+                    </div>
+                    <i class="bi bi-chevron-right small text-secondary"></i>
+                </a>
+                <a class="sidebar-link" href="produitStock.html">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-box-seam"></i>
+                        <span class="fw-medium">Produits &amp; Stock</span>
+                    </div>
+                    <i class="bi bi-chevron-right small text-secondary"></i>
+                </a>
+                <a class="sidebar-link" href="finances.html">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-file-earmark-bar-graph"></i>
+                        <span class="fw-medium">Finances</span>
+                    </div>
+                    <i class="bi bi-chevron-right small text-secondary"></i>
+                </a>
+                <a class="sidebar-link" href="gestionPersonnel.html">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-people"></i>
+                        <span class="fw-medium">Personnel</span>
+                    </div>
+                    <i class="bi bi-chevron-right small"></i>
+                </a>
+                <a class="sidebar-link" href="parametre.html">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-gear"></i>
+                        <span class="fw-medium">Paramètre</span>
+                    </div>
+                    <i class="bi bi-chevron-right small text-secondary"></i>
+                </a>
+            </nav>
+        </div>
+        <div class="p-3 border-top">
+            <a class="sidebar-link danger" href="#">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span class="fw-medium">Déconnexion</span>
+                </div>
+                <i class="bi bi-chevron-right small text-danger"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- BEGIN: TopHeader -->
+    <header class="topbar d-flex align-items-center justify-content-between px-4 sticky-top bg-white border-bottom z-10">
+        <div class="d-flex align-items-center gap-2 small">
+            <button class="btn btn-light d-lg-none me-2" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <span class="fw-semibold text-dark">Accueil</span>
+            <i class="bi bi-chevron-right text-secondary" style="font-size: 0.75rem;"></i>
+            <span class="text-secondary">Gestion des Sites</span>
+        </div>
+        <div class="d-flex align-items-center gap-4">
+            <button class="btn btn-link text-secondary p-1">
+                <i class="bi bi-moon fs-5"></i>
+            </button>
+            <button class="btn btn-link text-secondary p-1 position-relative">
+                <i class="bi bi-bell fs-5"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle border border-2 border-dark d-flex align-items-center justify-content-center" style="width: 2.5rem; height: 2.5rem;">
+                    <i class="bi bi-person text-dark fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- BEGIN: Main Content -->
+    <main class="main-content p-4 p-lg-5">
+        <div class="container-fluid" style="max-width: 1600px;">
+            
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <h2 class="h3 fw-bold text-dark mb-0">Tous les sites</h2>
+                </div>
+                <!-- Ce bouton ouvre la modale d'AJOUT -->
+                <button class="btn btn-primary-custom d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addSiteModal">
+                    <i class="bi bi-plus-lg"></i>
+                    NOUVEAU SITE
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="stat-card position-relative overflow-hidden">
+                        <div class="position-absolute top-0 end-0 bg-primary bg-opacity-10 rounded-circle" style="width: 6rem; height: 6rem; transform: translate(30%, -30%);"></div>
+                        <div class="d-flex align-items-center position-relative" style="z-index: 1;">
+                            <div class="icon-circle bg-primary bg-opacity-10 text-primary me-4">
+                                <i class="bi bi-house-door fs-4"></i>
+                            </div>
+                            <div>
+                                <span class="h2 fw-extrabold d-block text-dark">12</span>
+                                <span class="small text-secondary fw-bold text-uppercase">Total sites</span>
+                                <div class="mt-2 d-flex align-items-center gap-2" style="font-size: 0.6875rem; font-weight: 700;">
+                                    <span class="text-success">10 Actifs</span>
+                                    <span class="text-secondary">|</span>
+                                    <span class="text-danger">2 Inactifs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="stat-card d-flex flex-column justify-content-between">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <span class="h2 fw-extrabold text-dark">04</span>
+                            <span class="icon-circle bg-indigo bg-opacity-10" style="background-color: rgba(99,102,241,0.1); color: #6366f1;">
+                                <i class="bi bi-bag"></i>
+                            </span>
+                        </div>
+                        <div class="mt-3">
+                            <p class="small text-secondary fw-bold text-uppercase mb-2">Magasins</p>
+                            <div class="progress" style="height: 0.375rem;">
+                                <div class="progress-bar" style="width: 33.33%; background-color: #6366f1;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="stat-card d-flex flex-column justify-content-between">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <span class="h2 fw-extrabold text-dark">03</span>
+                            <span class="icon-circle bg-warning bg-opacity-10 text-warning">
+                                <i class="bi bi-box-seam"></i>
+                            </span>
+                        </div>
+                        <div class="mt-3">
+                            <p class="small text-secondary fw-bold text-uppercase mb-2">Dépôts</p>
+                            <div class="progress" style="height: 0.375rem;">
+                                <div class="progress-bar bg-warning" style="width: 25%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="stat-card d-flex flex-column justify-content-between">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <span class="h2 fw-extrabold text-dark">05</span>
+                            <span class="icon-circle bg-danger bg-opacity-10 text-danger">
+                                <i class="bi bi-cup-hot"></i>
+                            </span>
+                        </div>
+                        <div class="mt-3">
+                            <p class="small text-secondary fw-bold text-uppercase mb-2">Bars &amp; Cafés</p>
+                            <div class="progress" style="height: 0.375rem;">
+                                <div class="progress-bar bg-danger" style="width: 42%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Site List Table -->
+            <div class="stat-card overflow-hidden p-0">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 p-4 border-bottom">
+                    <div class="d-flex align-items-center gap-3">
+                        <h3 class="h5 fw-bold mb-0">Listes d'exploitation</h3>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="d-inline-block bg-success rounded-circle" style="width: 0.5rem; height: 0.5rem;"></span>
+                            <span class="small fw-bold text-secondary">Temps réel</span>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <div class="position-relative">
+                            <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary" style="z-index: 3;">
+                                <i class="bi bi-search small"></i>
+                            </span>
+                            <input class="form-control ps-5 py-2 bg-light border-0 rounded-3" style="width: 18rem; font-size: 0.875rem;" placeholder="Rechercher par nom, responsable..." type="text"/>
+                        </div>
+                        <button class="btn btn-light btn-sm d-flex align-items-center gap-2 fw-bold border" style="font-size: 0.6875rem;">
+                            <i class="bi bi-funnel text-primary"></i>
+                            FILTRES AVANCÉS
+                        </button>
+                        <button class="btn btn-light btn-sm">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Nom du site</th>
+                                <th class="text-center">Type</th>
+                                <th>Adresse</th>
+                                <th>Responsable</th>
+                                <th class="text-center">Principal</th>
+                                <th class="text-end pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">Magasin Central</td>
+                                <td class="text-center"><span class="badge-type badge-magasin">Magasin</span></td>
+                                <td class="text-secondary small">Kinshasa, Gombe, Avenue Kasa-vubu</td>
+                                <td class="text-dark small">Joseph MUBENGA</td>
+                                <td class="text-center text-warning fw-bold small"><i class="bi bi-star-fill me-1"></i> Oui</td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light rounded-circle btn-edit-site" data-site-id="1" data-site-name="Magasin Central" data-site-type="Magasin" data-site-city="Kinshasa" data-site-district="Gombe" data-site-address="Gombe, Avenue Kasa-vubu" data-site-manager="Joseph MUBENGA" data-site-phone="+243 812345678" data-site-principal="true" title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light rounded-circle ms-1">
+                                        <i class="bi bi-three-dots"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">Dépôt Nord</td>
+                                <td class="text-center"><span class="badge-type badge-depot">Dépôt</span></td>
+                                <td class="text-secondary small">Kinshasa, Limete, 7ème Rue</td>
+                                <td class="text-dark small">Sarah KITOKO</td>
+                                <td class="text-center text-secondary small">Non</td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light rounded-circle btn-edit-site" data-site-id="2" data-site-name="Dépôt Nord" data-site-type="Dépôt" data-site-city="Kinshasa" data-site-district="Limete" data-site-address="Limete, 7ème Rue" data-site-manager="Sarah KITOKO" data-site-phone="+243 812345679" data-site-principal="false" title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light rounded-circle ms-1">
+                                        <i class="bi bi-three-dots"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">Lounge Bar VIP</td>
+                                <td class="text-center"><span class="badge-type badge-bar">Bar &amp; Café</span></td>
+                                <td class="text-secondary small">Kinshasa, Gombe</td>
+                                <td class="text-dark small">Pierre MUKADI</td>
+                                <td class="text-center text-secondary small">Non</td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light rounded-circle btn-edit-site" data-site-id="3" data-site-name="Lounge Bar VIP" data-site-type="Bar" data-site-city="Kinshasa" data-site-district="Gombe" data-site-address="Gombe" data-site-manager="Pierre MUKADI" data-site-phone="+243 812345680" data-site-principal="false" title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light rounded-circle ms-1">
+                                        <i class="bi bi-three-dots"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">Magasin Secondaire</td>
+                                <td class="text-center"><span class="badge-type badge-magasin">Magasin</span></td>
+                                <td class="text-secondary small">Kinshasa, Ngaliema</td>
+                                <td class="text-dark small">Joseph MUBENGA</td>
+                                <td class="text-center text-secondary small">Non</td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light rounded-circle btn-edit-site" data-site-id="4" data-site-name="Magasin Secondaire" data-site-type="Magasin" data-site-city="Kinshasa" data-site-district="Ngaliema" data-site-address="Ngaliema" data-site-manager="Joseph MUBENGA" data-site-phone="+243 812345681" data-site-principal="false" title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light rounded-circle ms-1">
+                                        <i class="bi bi-three-dots"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center p-4 border-top bg-light">
+                    <small class="text-secondary fw-bold text-uppercase">
+                        Affichage <span class="text-dark">1 à 5</span> sur <span class="text-dark">12</span> établissements
+                    </small>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="pagination-btn"><i class="bi bi-chevron-left small"></i></button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn">2</button>
+                        <button class="pagination-btn">3</button>
+                        <button class="pagination-btn"><i class="bi bi-chevron-right small"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-center small text-secondary mt-4 mb-0">Copyright 2026 Haut Shop</p>
+        </div>
+    </main>
+
+    <!-- ==================== MODALE AJOUT SITE ==================== -->
+    <div class="modal fade" id="addSiteModal" tabindex="-1" aria-labelledby="addSiteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header border-bottom">
+                    <h2 class="modal-title h5 fw-bold text-dark" id="addSiteModalLabel">Ajouter un nouveau site</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="addSiteForm">
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Nom du site <span class="text-danger">*</span></label>
+                            <input class="form-control form-control-custom" id="addSiteName" placeholder="exemple : Magasin centre" type="text" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Type de site <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-custom" id="addSiteType" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="Magasin">Magasin</option>
+                                <option value="Dépôt">Dépôt</option>
+                                <option value="Bar">Bar</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Statut</label>
+                            <div class="d-flex gap-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="addStatus" id="addStatusActive" value="actif" checked/>
+                                    <label class="form-check-label small text-secondary" for="addStatusActive">Actif</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="addStatus" id="addStatusInactive" value="inactif"/>
+                                    <label class="form-check-label small text-secondary" for="addStatusInactive">Inactif</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label-custom d-block">Ville <span class="text-danger">*</span></label>
+                                <input class="form-control form-control-custom" id="addSiteCity" placeholder="ex: Kinshasa" type="text" required/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-custom d-block">Quartier <span class="text-danger">*</span></label>
+                                <input class="form-control form-control-custom" id="addSiteDistrict" placeholder="ex: Gombe" type="text" required/>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Adresse <span class="text-danger">*</span></label>
+                            <input class="form-control form-control-custom" id="addSiteAddress" placeholder="ex: Gombe, Avenue Kasa-vubu" type="text" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Responsable du site <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-custom" id="addSiteManager" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="Joseph MUBENGA">Joseph MUBENGA</option>
+                                <option value="Sarah KITOKO">Sarah KITOKO</option>
+                                <option value="Marc LUKUSA">Marc LUKUSA</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Téléphone du site</label>
+                            <input class="form-control form-control-custom" id="addSitePhone" placeholder="+243 xxxxxxxxx" type="text"/>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="addSitePrincipal"/>
+                                <label class="form-check-label" for="addSitePrincipal">
+                                    <span class="fw-bold small text-dark">Définir comme site principal</span>
+                                    <br/>
+                                    <span class="small text-secondary">(Un seul site peut être marqué comme principal)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-top bg-light">
+                    <button type="button" class="btn btn-light px-4 py-2 fw-bold text-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary-custom d-flex align-items-center gap-2" id="btnSaveSite">
+                        <i class="bi bi-floppy"></i> Enregistrer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODALE MODIFICATION SITE ==================== -->
+    <div class="modal fade" id="editSiteModal" tabindex="-1" aria-labelledby="editSiteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header border-bottom">
+                    <h2 class="modal-title h5 fw-bold text-dark" id="editSiteModalLabel">Modifier le site</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editSiteForm">
+                        <input type="hidden" id="editSiteId" value=""/>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Nom du site</label>
+                            <input class="form-control form-control-custom" id="editSiteName" placeholder="exemple : Magasin centre" type="text" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Type de site</label>
+                            <select class="form-select form-select-custom" id="editSiteType" required>
+                                <option value="Magasin">Magasin</option>
+                                <option value="Dépôt">Dépôt</option>
+                                <option value="Bar">Bar</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Statut</label>
+                            <div class="d-flex gap-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="editStatus" id="editStatusActive" value="actif" checked/>
+                                    <label class="form-check-label small text-secondary" for="editStatusActive">Actif</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="editStatus" id="editStatusInactive" value="inactif"/>
+                                    <label class="form-check-label small text-secondary" for="editStatusInactive">Inactif</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label-custom d-block">Ville</label>
+                                <input class="form-control form-control-custom" id="editSiteCity" placeholder="ex: Kinshasa" type="text" required/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-custom d-block">Quartier</label>
+                                <input class="form-control form-control-custom" id="editSiteDistrict" placeholder="ex: Gombe" type="text" required/>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Adresse</label>
+                            <input class="form-control form-control-custom" id="editSiteAddress" placeholder="ex: Gombe, Avenue Kasa-vubu" type="text" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Responsable du site</label>
+                            <select class="form-select form-select-custom" id="editSiteManager" required>
+                                <option value="Joseph MUBENGA">Joseph MUBENGA</option>
+                                <option value="Sarah KITOKO">Sarah KITOKO</option>
+                                <option value="Marc LUKUSA">Marc LUKUSA</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block">Téléphone du site</label>
+                            <input class="form-control form-control-custom" id="editSitePhone" placeholder="+243 xxxxxxxxx" type="text"/>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="editSitePrincipal"/>
+                                <label class="form-check-label" for="editSitePrincipal">
+                                    <span class="fw-bold small text-dark">Définir comme site principal</span><br/>
+                                    <span class="small text-secondary">(Un seul site peut être marqué comme principal)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-top bg-light">
+                    <button type="button" class="btn btn-light px-4 py-2 fw-bold text-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary-custom d-flex align-items-center gap-2" id="btnUpdateSite">
+                        <i class="bi bi-cloud-upload"></i> Mettre à jour
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+            document.getElementById('sidebarBackdrop').classList.toggle('show');
+        }
+        
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', () => { if (window.innerWidth < 992) toggleSidebar(); });
+        });
+        
+        // ========== MODALE AJOUT ==========
+        const addSiteModal = new bootstrap.Modal(document.getElementById('addSiteModal'));
+        const addSiteForm = document.getElementById('addSiteForm');
+        
+        document.getElementById('btnSaveSite').addEventListener('click', function() {
+            const requiredFields = addSiteForm.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#ef4444';
+                    setTimeout(() => { field.style.borderColor = '#e5e7eb'; }, 2000);
+                }
+            });
+            
+            if (isValid) {
+                const btn = this;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enregistrement...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Ajouté !';
+                    btn.classList.add('btn-success');
+                    btn.classList.remove('btn-primary-custom');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="bi bi-floppy me-2"></i>Enregistrer';
+                        btn.classList.remove('btn-success');
+                        btn.classList.add('btn-primary-custom');
+                        btn.disabled = false;
+                        addSiteModal.hide();
+                        addSiteForm.reset();
+                        
+                        const toast = document.createElement('div');
+                        toast.className = 'position-fixed bottom-0 end-0 m-4 p-3 bg-success text-white rounded-3 shadow-lg';
+                        toast.style.zIndex = '9999';
+                        toast.innerHTML = '<i class="bi bi-check-circle me-2"></i>Site ajouté avec succès !';
+                        document.body.appendChild(toast);
+                        setTimeout(() => toast.remove(), 3000);
+                    }, 1500);
+                }, 800);
+            }
+        });
+        
+        document.getElementById('addSiteModal').addEventListener('hidden.bs.modal', () => addSiteForm.reset());
+        
+        // ========== MODALE MODIFICATION ==========
+        const editSiteModal = new bootstrap.Modal(document.getElementById('editSiteModal'));
+        
+        document.querySelectorAll('.btn-edit-site').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('editSiteId').value = this.dataset.siteId;
+                document.getElementById('editSiteName').value = this.dataset.siteName;
+                document.getElementById('editSiteType').value = this.dataset.siteType;
+                document.getElementById('editSiteCity').value = this.dataset.siteCity;
+                document.getElementById('editSiteDistrict').value = this.dataset.siteDistrict;
+                document.getElementById('editSiteAddress').value = this.dataset.siteAddress;
+                document.getElementById('editSiteManager').value = this.dataset.siteManager;
+                document.getElementById('editSitePhone').value = this.dataset.sitePhone;
+                document.getElementById('editSitePrincipal').checked = this.dataset.sitePrincipal === 'true';
+                editSiteModal.show();
+            });
+        });
+        
+        document.getElementById('btnUpdateSite').addEventListener('click', function() {
+            const form = document.getElementById('editSiteForm');
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#ef4444';
+                    setTimeout(() => { field.style.borderColor = '#e5e7eb'; }, 2000);
+                }
+            });
+            
+            if (isValid) {
+                const btn = this;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mise à jour...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Mis à jour !';
+                    btn.classList.add('btn-success');
+                    btn.classList.remove('btn-primary-custom');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="bi bi-cloud-upload me-2"></i>Mettre à jour';
+                        btn.classList.remove('btn-success');
+                        btn.classList.add('btn-primary-custom');
+                        btn.disabled = false;
+                        editSiteModal.hide();
+                        
+                        const toast = document.createElement('div');
+                        toast.className = 'position-fixed bottom-0 end-0 m-4 p-3 bg-success text-white rounded-3 shadow-lg';
+                        toast.style.zIndex = '9999';
+                        toast.innerHTML = '<i class="bi bi-check-circle me-2"></i>Site mis à jour avec succès !';
+                        document.body.appendChild(toast);
+                        setTimeout(() => toast.remove(), 3000);
+                    }, 1500);
+                }, 800);
+            }
+        });
+        
+        document.querySelectorAll('.pagination-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.pagination-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

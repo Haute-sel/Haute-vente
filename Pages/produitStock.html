@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>HauteShop - Produits &amp; Stock</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary: #1c1fcd;
+            --primary-container: #3b42e3;
+            --surface: #f8f9ff;
+            --surface-container-lowest: #ffffff;
+            --surface-container-low: #eff4ff;
+            --surface-container: #e5eeff;
+            --surface-container-high: #dce9ff;
+            --on-surface: #0b1c30;
+            --on-surface-variant: #454555;
+            --on-background: #0b1c30;
+            --outline-variant: #c6c5d8;
+            --outline: #767587;
+            --secondary: #585c82;
+            --secondary-container: #ced1fe;
+            --secondary-fixed: #dfe0ff;
+            --on-secondary-container: #55597f;
+            --on-secondary-fixed: #14183b;
+            --error: #ba1a1a;
+            --sidebar-width: 16rem;
+            --topbar-height: 4rem;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--surface);
+            color: var(--on-surface);
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--surface-container-lowest);
+            border-right: 1px solid var(--outline-variant);
+            height: 100vh;
+            flex-shrink: 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1040;
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.75rem;
+            color: var(--on-surface-variant);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--surface-container-low);
+        }
+        
+        .sidebar-link.active {
+            background-color: var(--secondary-fixed);
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        /* Topbar */
+        .topbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            height: var(--topbar-height);
+            background-color: var(--surface-container-lowest);
+            border-bottom: 1px solid var(--outline-variant);
+            z-index: 1030;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--topbar-height);
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-container);
+            border-color: var(--primary-container);
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            opacity: 0.9;
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            border: 1px solid var(--outline-variant);
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-outline-custom:hover {
+            background-color: var(--surface-container-low);
+        }
+        
+        /* Table */
+        .table-custom thead th {
+            background-color: var(--on-background);
+            color: white;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            padding: 1rem 1.5rem;
+            border: none;
+        }
+        
+        .table-custom tbody td {
+            padding: 1rem 1.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--outline-variant);
+        }
+        
+        .table-custom tbody tr {
+            transition: background-color 0.15s ease;
+        }
+        
+        .table-custom tbody tr:hover {
+            background-color: var(--surface-container-low);
+        }
+        
+        .badge-status {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+        }
+        
+        .badge-active {
+            background-color: var(--secondary-container);
+            color: var(--on-secondary-container);
+        }
+        
+        .badge-inactive {
+            background-color: #e5e7eb;
+            color: #6b7280;
+        }
+        
+        .badge-stock {
+            font-size: 0.625rem;
+            font-weight: 700;
+        }
+        
+        .product-thumb {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            background-color: var(--surface-container-high);
+        }
+        
+        .stock-bar {
+            height: 0.375rem;
+            border-radius: 9999px;
+            background-color: var(--surface-container-high);
+            overflow: hidden;
+        }
+        
+        .stock-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+        }
+        
+        .stat-card {
+            background: var(--surface-container-lowest);
+            border: 1px solid rgba(198, 197, 216, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .pagination-btn {
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid var(--outline-variant);
+            background: white;
+            color: var(--on-surface-variant);
+            transition: all 0.15s ease;
+        }
+        
+        .pagination-btn:hover {
+            background-color: var(--surface-container-low);
+        }
+        
+        .pagination-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* View Toggle */
+        .view-container {
+            display: block;
+        }
+        
+        .view-container.hidden {
+            display: none;
+        }
+        
+        /* Gallery */
+        .gallery-main {
+            aspect-ratio: 16/9;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .gallery-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-main:hover img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-thumb {
+            aspect-ratio: 1;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .gallery-thumb.active {
+            border-color: var(--primary);
+        }
+        
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(198, 197, 216, 0.2);
+        }
+        
+        .spec-label {
+            color: var(--on-surface-variant);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .spec-value {
+            color: var(--on-surface);
+            font-weight: 700;
+        }
+        
+        .alert-banner {
+            background-color: var(--primary-container);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 991.98px) {
+            .sidebar {
+                left: -100%;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+            
+            .topbar {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar-backdrop {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 1039;
+            }
+            
+            .sidebar-backdrop.show {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+    <!-- BEGIN: Sidebar -->
+        <aside class="sidebar d-flex flex-column" id="sidebar">
+            <div class="p-4">
+                <h1 class="h4 fw-bold d-flex align-items-center mb-0">
+                    <span class="text-primary">HAUT</span><span class="text-secondary">-SHOP</span>
+                </h1>
+            </div>
+            <div class="px-3 py-2 flex-grow-1 overflow-auto">
+                <p class="nav-section-title">Navigation</p>
+                <nav class="d-flex flex-column gap-1">
+                    <a class="sidebar-link" href="Dashboard.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-house-door"></i>
+                            <span class="fw-medium">Tableau de bord</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="gestionSites.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-building"></i>
+                            <span class="fw-medium">Sites</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link active" href="produitStock.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-box-seam"></i>
+                            <span class="fw-medium">Produits &amp; Stock</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="finances.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span class="fw-medium">Finances</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="gestionPersonnel.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-people"></i>
+                            <span class="fw-medium">Personnel</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="parametre.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-gear"></i>
+                            <span class="fw-medium">Paramètre</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                </nav>
+            </div>
+            <div class="p-3 border-top">
+                <a class="sidebar-link danger" href="#">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span class="fw-medium">Déconnexion</span>
+                    </div>
+                    <i class="bi bi-chevron-right small text-danger"></i>
+                </a>
+            </div>
+        </aside>
+        <!-- END: Sidebar -->
+
+    <!-- BEGIN: TopHeader -->
+        <header class="topbar d-flex align-items-center justify-content-between px-4 sticky-top bg-white border-bottom z-10">
+            <div class="d-flex align-items-center gap-2 small">
+                <button class="btn btn-light d-lg-none me-2" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <span class="fw-semibold text-dark">Accueil</span>
+                <i class="bi bi-chevron-right text-secondary" style="font-size: 0.75rem;"></i>
+                <span class="text-secondary">Inventaire des Produits</span>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <button class="btn btn-link text-secondary p-1">
+                    <i class="bi bi-moon fs-5"></i>
+                </button>
+                <button class="btn btn-link text-secondary p-1 position-relative">
+                    <i class="bi bi-bell fs-5"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle border border-2 border-dark d-flex align-items-center justify-content-center" style="width: 2.5rem; height: 2.5rem;">
+                        <i class="bi bi-person text-dark fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+    <!-- END: TopHeader -->
+
+    <!-- BEGIN: Main Content -->
+    <main class="main-content p-4 p-lg-5">
+        <div class="container-fluid" style="max-width: 1440px;">
+            
+            <!-- VIEW 1: Product List -->
+            <div class="view-container" id="viewProductList">
+                <!-- Page Header -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end gap-3 mb-4">
+                    <div>
+                        <h2 class="h3 fw-bold text-dark mb-1">Inventaire des Produits</h2>
+                        <p class="text-secondary mb-0">Gérez votre catalogue, suivez les stocks et optimisez vos ventes.</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-custom d-flex align-items-center gap-2">
+                            <i class="bi bi-download"></i> Exporter CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters & Alert -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-8">
+                        <div class="stat-card d-flex flex-wrap align-items-center gap-3">
+                            <div>
+                                <label class="form-label small fw-bold text-secondary text-uppercase mb-1">Catégorie</label>
+                                <select class="form-select form-select-sm" style="min-width: 200px;">
+                                    <option>Toutes les catégories</option>
+                                    <option>Électronique</option>
+                                    <option>Mode &amp; Accessoires</option>
+                                    <option>Maison &amp; Jardin</option>
+                                    <option>Cosmétiques</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label small fw-bold text-secondary text-uppercase mb-1">Statut</label>
+                                <div class="btn-group bg-light p-1 rounded-2">
+                                    <button class="btn btn-sm btn-light shadow-sm rounded-2 fw-bold text-primary">Tous</button>
+                                    <button class="btn btn-sm btn-light rounded-2 text-secondary">Actifs</button>
+                                    <button class="btn btn-sm btn-light rounded-2 text-secondary">Inactifs</button>
+                                </div>
+                            </div>
+                            <div class="ms-auto">
+                                <button class="btn btn-link text-primary fw-bold small text-decoration-none">
+                                    <i class="bi bi-funnel"></i> Plus de filtres
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="alert-banner">
+                            <div class="position-relative" style="z-index: 1;">
+                                <span class="badge bg-white bg-opacity-25 text-white small mb-2">Alerte Stock</span>
+                                <div class="h5 fw-bold mt-2">12 Produits Critiques</div>
+                                <p class="small text-white text-opacity-75 mb-0 mt-1">Réapprovisionnement nécessaire immédiatement.</p>
+                            </div>
+                            <i class="bi bi-exclamation-triangle position-absolute bottom-0 end-0 opacity-25" style="font-size: 6rem; transform: translate(1rem, 1rem);"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="stat-card overflow-hidden p-0">
+                    <div class="table-responsive">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Nom</th>
+                                    <th>Catégorie</th>
+                                    <th>Prix Achat</th>
+                                    <th>Prix Vente</th>
+                                    <th>Stock Actuel</th>
+                                    <th>Statut</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Row 1 -->
+                                <tr data-product-id="1">
+                                    <td class="fw-bold text-secondary">#HS-9021</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img alt="Watch" class="product-thumb" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACpXFTKiroHTaxOp_4JGjpe9G139RrPCMWJCtNRH4A3pHH_kaQhsxPvoNAzWuaUWOlvHLolq3TgQ_HbWiLXglQMWRM8mu5fr12ZrQfAhuiFoVQmnHZOn7PlwmEwd_ZhNWzH-Xs-sMDZwAIl4QrC48t4rdq2CPnaklox350_crDuIZXX0m9TIhreFUl_lY93Hct1KgfGfuxDSGx6_jC4BBMSw9TFO0CmYa7p67yybRXIvPa5oQVNDmIA2poujbPLxVz72kddIJQGx0"/>
+                                            <div>
+                                                <div class="fw-bold text-dark">Montre Nova Gen 2</div>
+                                                <small class="text-secondary">SKU: WL-02-BLK</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-secondary">Électronique</td>
+                                    <td class="text-secondary">145,00 €</td>
+                                    <td class="fw-bold text-dark">299,00 €</td>
+                                    <td>
+                                        <div>
+                                            <div class="d-flex justify-content-between small mb-1">
+                                                <span class="fw-bold">45 unités</span>
+                                                <span class="text-success fw-bold">Optimal</span>
+                                            </div>
+                                            <div class="stock-bar">
+                                                <div class="stock-bar-fill bg-primary" style="width: 75%;"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge-status badge-active">ACTIF</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-light rounded-circle btn-view-product" data-product-id="1" title="Voir détails">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-light rounded-circle ms-1">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Row 2 -->
+                                <tr data-product-id="2">
+                                    <td class="fw-bold text-secondary">#HS-7732</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img alt="Shoes" class="product-thumb" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjhvPY9Yrun4xNFEUCdNT94apJDlT6mpbN_giVNoZG1Q04ufaAH7D6PxReN6ZJ_jkfyUUZ0tNNoJIPrTVXl4EzIEbo2N2DXN7DqCByiGGHzLn3tMn1RxAUP3ahoZc03ZY3DVsP-9KNZTJ-tZYkEUQO1PXWcQpwLCAMDP1eIcOSZpwwe3pURhmvEYmkWHLNYLWbUSMrLoJNXx6zMO48FivzfgXU43XylbuDWVpjmKzuqXf10Ute9GB9656qzqLfLdg-icPaJpkqehU"/>
+                                            <div>
+                                                <div class="fw-bold text-dark">Baskets Pro-Runner</div>
+                                                <small class="text-secondary">SKU: FT-44-RED</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-secondary">Mode</td>
+                                    <td class="text-secondary">42,50 €</td>
+                                    <td class="fw-bold text-dark">89,90 €</td>
+                                    <td>
+                                        <div>
+                                            <div class="d-flex justify-content-between small mb-1">
+                                                <span class="fw-bold">3 unités</span>
+                                                <span class="text-danger fw-bold">Critique</span>
+                                            </div>
+                                            <div class="stock-bar">
+                                                <div class="stock-bar-fill bg-danger" style="width: 15%;"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge-status badge-active">ACTIF</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-light rounded-circle btn-view-product" data-product-id="2" title="Voir détails">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-light rounded-circle ms-1">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Row 3 -->
+                                <tr data-product-id="3">
+                                    <td class="fw-bold text-secondary">#HS-4410</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img alt="Headphones" class="product-thumb" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9ygfmhQmg1j-Y_G5EDC4okvszVxSi-qvq7LusVEmSQJUYTBr47FfRw-2pfZJ5ISomuQC5LmwErpTsQIIB7BXinoXe0n0MjMjt9cj9J0Jk2GgTDG-KI6M3WeIS8CE2kKV5uAZ-eSdONtwWOKDUIqPDaFOBWiFM3qeoEte32ypp818R8dVPaS5yXpld724UmMH4SQ9BWA0FfG9FrB9zEzvO8UnuyJQRYBOVZ_bjjWLDAauNgjLv3odPmpZKHFN6sAscwDQBKRhxdco"/>
+                                            <div>
+                                                <div class="fw-bold text-dark">Casque Studio-X</div>
+                                                <small class="text-secondary">SKU: AU-11-MAT</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-secondary">Électronique</td>
+                                    <td class="text-secondary">88,00 €</td>
+                                    <td class="fw-bold text-dark">175,00 €</td>
+                                    <td>
+                                        <div>
+                                            <div class="d-flex justify-content-between small mb-1">
+                                                <span class="fw-bold">0 unité</span>
+                                                <span class="text-secondary fw-bold">Rupture</span>
+                                            </div>
+                                            <div class="stock-bar">
+                                                <div class="stock-bar-fill bg-secondary" style="width: 0%;"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge-status badge-inactive">INACTIF</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-light rounded-circle btn-view-product" data-product-id="3" title="Voir détails">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-light rounded-circle ms-1">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Row 4 -->
+                                <tr data-product-id="4">
+                                    <td class="fw-bold text-secondary">#HS-2104</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img alt="Glasses" class="product-thumb" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgjT4RLsRrMdT9SuxtKKwg5KodBZ9Wt2W0TFRhobIHA0pEBe0AkgnsQzcjJU33opdtn0kLdJKQFdH_qiHQKrnenfEpqBKRBRBmqJ4CBQTZ_1woV6cDLDaZUURvfp7k94Da3zcj2TPzlz7XDaGxSWKTT88MAYH3CjZ-hHL5UiIzZX96ItP7AuaiDccXyIbTOaHq9o0EFvzd2XtAXCgTJQB1e0v_lUSlJSEf_J-VIPxH29CwjyQXXSx0XpPFYXm4zFfCV_5w5KJLAJM"/>
+                                            <div>
+                                                <div class="fw-bold text-dark">Lunettes Aviator G1</div>
+                                                <small class="text-secondary">SKU: AC-99-GLD</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-secondary">Mode</td>
+                                    <td class="text-secondary">55,00 €</td>
+                                    <td class="fw-bold text-dark">120,00 €</td>
+                                    <td>
+                                        <div>
+                                            <div class="d-flex justify-content-between small mb-1">
+                                                <span class="fw-bold">12 unités</span>
+                                                <span class="text-warning fw-bold">Modéré</span>
+                                            </div>
+                                            <div class="stock-bar">
+                                                <div class="stock-bar-fill bg-warning" style="width: 30%;"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge-status badge-active">ACTIF</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-light rounded-circle btn-view-product" data-product-id="4" title="Voir détails">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-light rounded-circle ms-1">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center p-4 border-top">
+                        <small class="text-secondary fw-bold">Affichage de 1-4 sur 148 produits</small>
+                        <div class="d-flex gap-2">
+                            <button class="pagination-btn"><i class="bi bi-chevron-left"></i></button>
+                            <button class="pagination-btn active">1</button>
+                            <button class="pagination-btn">2</button>
+                            <button class="pagination-btn">3</button>
+                            <button class="pagination-btn"><i class="bi bi-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Section -->
+                <div class="row g-4 mt-4">
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-trending-up text-primary me-2"></i>Produits les plus vendus</h5>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="text-secondary">Montre Nova Gen 2</span>
+                                    <span class="text-primary fw-bold">+24% ce mois</span>
+                                </div>
+                                <div class="stock-bar">
+                                    <div class="stock-bar-fill bg-primary" style="width: 85%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="text-secondary">Baskets Pro-Runner</span>
+                                    <span class="text-primary fw-bold">+12% ce mois</span>
+                                </div>
+                                <div class="stock-bar">
+                                    <div class="stock-bar-fill bg-primary" style="width: 60%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stat-card text-center d-flex flex-column align-items-center justify-content-center" style="min-height: 200px; border: 2px dashed var(--outline-variant);">
+                            <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm mb-3" style="width: 3rem; height: 3rem;">
+                                <i class="bi bi-building-add text-primary fs-5"></i>
+                            </div>
+                            <h5 class="fw-bold">Nouveau Fournisseur ?</h5>
+                            <p class="text-secondary small mb-3">Enregistrez de nouveaux partenaires pour automatiser vos réapprovisionnements.</p>
+                            <button class="btn btn-link text-primary fw-bold text-decoration-none">Ajouter un partenaire →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END VIEW 1 -->
+
+            <!-- VIEW 2: Product Detail -->
+            <div class="view-container hidden" id="viewProductDetail">
+                <!-- Breadcrumbs -->
+                <nav class="d-flex align-items-center gap-2 mb-4 small">
+                    <a class="text-secondary text-decoration-none fw-bold" href="#" id="breadcrumbProducts">Produits &amp; Stock</a>
+                    <i class="bi bi-chevron-right text-secondary small"></i>
+                    <span class="text-dark fw-bold" id="breadcrumbProductName">Fiche Produit</span>
+                </nav>
+
+                <!-- Product Header -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+                    <div>
+                        <h2 class="h3 fw-bold text-dark mb-2" id="detailProductName">Montre Chronographe Héritage</h2>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold">Accessoires de Luxe</span>
+                            <span class="text-secondary small">SKU: HS-WATCH-8921</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-custom d-flex align-items-center gap-2">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </button>
+                        <button class="btn btn-outline-custom d-flex align-items-center gap-2">
+                            <i class="bi bi-printer"></i> Étiquette
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Detail Grid -->
+                <div class="row g-4">
+                    <!-- Gallery -->
+                    <div class="col-lg-7">
+                        <div class="stat-card">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="gallery-main">
+                                        <img alt="Product Main" id="galleryMain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTb1VnIJAwDgFlJOWFP70tdqniFFbQh83adifmWJ2vKQG0nBqigzfWab_vS-yoC7G4NRcz9Cs-QqA6Cy8wT72pI2SEZWr_CGhwaRa-l70W_Aoe4MRvtzplKOkEtH2GT8dHyuRTY6TLsdLy72cSmFPxm7YKcVDMfbuO3H7ENiDuct5GFkD8YbkmqV6r4K2Tasg_Nc5jYDCG7YL7J7vEAvo8DdzlNfQ2r_l_yFrDUJgJPG1bmPrm8E9EjWhuUaSYEW6jdnmD0lW0NdY"/>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="gallery-thumb active" onclick="switchGallery(this, 0)">
+                                        <img alt="Detail 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7bT3vjRgEoR_xSWIol1J9uaaRKVocniQi-V5yLMV6UhladEokCad-tBpQk79JGJ8gJ6VhhN_j-JaYuTXn68aDRilkbh7vuWQLEvndQGRFD5K8QrdRgbgY4LdHrG5Ot2tbs6EsYlYVDX4vd1A6a1Nh6gvMuoftNNGxyivFT5m1CsJFXinz2WlgaCjcAGIjLj8e10-d9sXuhF_RqgvKKB93eph2kpq05dyB9nf4t7oJdHkZaAr-n07p8hcL1hwBoTWr4RYVfPgHesU"/>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="gallery-thumb" onclick="switchGallery(this, 1)">
+                                        <img alt="Detail 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqaGUJC5ZsK-lmfnrJABWwCW6J2mPaveo022vozBj-lA1vTOf-XyQMNA0liAWyedMAvFNaasucMbxzL_7gGn3EWLlq5noPDWiwNhftZLwna5sfrOjOwpYhyJ2RPGdq31DRWVM7T8JvBuP5Q0mrU8OF6G2j71YbQPqJovrnctXotjzUo3xLZCnJuIvK5bw71q3mHtxD6VJk9L9i9Vk95J0CTUdSf1zMFYsn450wRnwU1SQqeOST7f8yrIw0M9HGI47mHu0f39gOplo"/>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="gallery-thumb" onclick="switchGallery(this, 2)">
+                                        <img alt="Detail 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcrC-Gd3os7c1CZ6E5sdKqpBrB87kvvH9J8OTMMKxjIgeK48CHHUWjXr2hdGx6tQQG5rbF8MUfI3WLVFIM32yEDHCRK7KDHxyazy_w2G4j0VJFh1kYVKBTZsuRvCEYQ9sZrQva_XrcI98X42riHm2BiGmJld1LFjh03rXd7vDwFwQd3QbuKeR2Hk7-7HYBStD-Kj_obbROf9xaeTzH9kvRL6aVq4k3Y1F1PoA-gLg4SxKWDQ-jajKAdERmS5MXhUsdJ0z-oEq73EQ"/>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="gallery-thumb position-relative" onclick="switchGallery(this, 3)">
+                                        <img alt="Detail 4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGXt4tn0c8XVk1RgDGRuKhn2tJBIHktfIiA13B4mbZU_GVpX3cDIQu1WCtcXr-J2ouYZXT6V2vvrMbna-in5RWBNvTZC6UEifSRf4aJwDOPmvraI7i64GNMSJAaPZy760VkZU88wRwPmKpW4dO7kGZtbifdyidX8jtc7uPGKeMsHmmOmXYGRmFv6agto710_REDK7ki7mi72gIp2ZiLA0gphR5_lAwMU6f6r9RF7BMKa2aGzs0hZK59aqSWgn_8IGd898UTYn3Nds"/>
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex align-items-center justify-content-center text-white fw-bold">+5</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price & Stock -->
+                    <div class="col-lg-5">
+                        <div class="d-flex flex-column gap-4">
+                            <!-- Price Card -->
+                            <div class="stat-card">
+                                <h6 class="text-secondary text-uppercase small fw-bold mb-3">Informations Commerciales</h6>
+                                <div class="d-flex align-items-baseline gap-2 mb-4">
+                                    <span class="display-5 fw-bold text-primary">1 250,00 €</span>
+                                    <span class="text-secondary small">HT</span>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="bg-light rounded-3 p-3">
+                                            <small class="text-secondary fw-bold mb-1">Marge</small>
+                                            <p class="h5 fw-bold text-dark mb-0">42%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="bg-light rounded-3 p-3">
+                                            <small class="text-secondary fw-bold mb-1">Prix Achat</small>
+                                            <p class="h5 fw-bold text-dark mb-0">725,00 €</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stock Card -->
+                            <div class="stat-card flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h6 class="text-secondary text-uppercase small fw-bold mb-0">État du Stock</h6>
+                                    <span class="badge bg-success bg-opacity-10 text-success small">
+                                        <span class="d-inline-block bg-success rounded-circle me-1" style="width: 0.375rem; height: 0.375rem;"></span> EN STOCK
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                    <div>
+                                        <p class="display-5 fw-black text-dark mb-1">42 <small class="fs-6 fw-normal text-secondary">unités</small></p>
+                                        <p class="small text-secondary">Seuil d'alerte : 10 unités</p>
+                                    </div>
+                                    <div class="rounded-circle border-4 d-flex align-items-center justify-content-center" style="width: 5rem; height: 5rem; border-color: rgba(28,31,205,0.2) !important; border-top-color: var(--primary) !important;">
+                                        <span class="small fw-bold text-primary">84%</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-light w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-box-seam"></i> Ajuster le stock
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-lg-8">
+                        <div class="stat-card">
+                            <h5 class="fw-bold mb-4">Description Générale</h5>
+                            <div class="text-secondary lh-lg">
+                                <p>La Montre Chronographe Héritage incarne l'alliance parfaite entre l'horlogerie traditionnelle et le design contemporain. Équipée d'un mouvement automatique suisse de haute précision, elle offre une fiabilité exceptionnelle pour les professionnels exigeants.</p>
+                                <p>Son boîtier en acier inoxydable 316L de 42mm présente des finitions brossées et polies à la main, tandis que son cadran bleu profond à effet "soleil" capte la lumière avec élégance sous son verre saphir inrayable.</p>
+                            </div>
+                            <ul class="row row-cols-2 g-2 mt-4 list-unstyled">
+                                <li class="d-flex align-items-center gap-2"><i class="bi bi-check-circle text-primary"></i> Mouvement Automatique</li>
+                                <li class="d-flex align-items-center gap-2"><i class="bi bi-check-circle text-primary"></i> Étanche 100m</li>
+                                <li class="d-flex align-items-center gap-2"><i class="bi bi-check-circle text-primary"></i> Garantie 5 ans</li>
+                                <li class="d-flex align-items-center gap-2"><i class="bi bi-check-circle text-primary"></i> Bracelet Cuir Italien</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Specifications -->
+                    <div class="col-lg-4">
+                        <div class="stat-card">
+                            <h5 class="fw-bold mb-4">Spécifications</h5>
+                            <div class="spec-row"><span class="spec-label">Marque</span><span class="spec-value">HauteTime</span></div>
+                            <div class="spec-row"><span class="spec-label">Matériau</span><span class="spec-value">Acier / Cuir</span></div>
+                            <div class="spec-row"><span class="spec-label">Dimension</span><span class="spec-value">42 mm</span></div>
+                            <div class="spec-row"><span class="spec-label">Poids</span><span class="spec-value">145g</span></div>
+                            <div class="spec-row border-0"><span class="spec-label">Origine</span><span class="spec-value">Suisse</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Movements -->
+                    <div class="col-12">
+                        <div class="stat-card overflow-hidden p-0">
+                            <div class="d-flex justify-content-between align-items-center p-4 border-bottom bg-light">
+                                <h5 class="fw-bold mb-0">Mouvements de Stock Récents</h5>
+                                <button class="btn btn-link text-primary fw-bold small text-decoration-none">Voir tout l'historique</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-custom mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Référence</th>
+                                            <th>Quantité</th>
+                                            <th>Responsable</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="small">12 Oct 2023, 14:30</td>
+                                            <td class="small">Vente Client</td>
+                                            <td class="small text-primary fw-bold">#ORD-5521</td>
+                                            <td class="small text-danger fw-bold">-1 unit</td>
+                                            <td class="small">Julie Martin</td>
+                                            <td><span class="badge bg-success bg-opacity-10 text-success small fw-bold">Confirmé</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="small">10 Oct 2023, 09:15</td>
+                                            <td class="small">Réapprovisionnement</td>
+                                            <td class="small text-primary fw-bold">#PUR-8820</td>
+                                            <td class="small text-success fw-bold">+20 units</td>
+                                            <td class="small">Directeur Achats</td>
+                                            <td><span class="badge bg-success bg-opacity-10 text-success small fw-bold">Confirmé</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="small">08 Oct 2023, 16:45</td>
+                                            <td class="small">Retour Client</td>
+                                            <td class="small text-primary fw-bold">#RET-1102</td>
+                                            <td class="small text-success fw-bold">+1 unit</td>
+                                            <td class="small">SAV Boutique</td>
+                                            <td><span class="badge bg-warning bg-opacity-10 text-warning small fw-bold">En Attente</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="small">05 Oct 2023, 11:20</td>
+                                            <td class="small">Ajustement Inventaire</td>
+                                            <td class="small text-primary fw-bold">#INV-990</td>
+                                            <td class="small text-danger fw-bold">-2 units</td>
+                                            <td class="small">Inventaire Annuel</td>
+                                            <td><span class="badge bg-danger bg-opacity-10 text-danger small fw-bold">Corrigé</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END VIEW 2 -->
+
+        </div>
+    </main>
+    <!-- END: Main Content -->
+
+    <!-- Footer -->
+    <footer class="text-center py-3 border-top bg-white" style="margin-left: var(--sidebar-width);">
+        <small class="text-secondary">© 2024 HauteShop Inc. Système de gestion d'inventaire v4.2.0. Tous droits réservés.</small>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript -->
+    <script>
+        // Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
+        }
+        
+        // Gallery images array
+        const galleryImages = [
+            'https://lh3.googleusercontent.com/aida-public/AB6AXuCTb1VnIJAwDgFlJOWFP70tdqniFFbQh83adifmWJ2vKQG0nBqigzfWab_vS-yoC7G4NRcz9Cs-QqA6Cy8wT72pI2SEZWr_CGhwaRa-l70W_Aoe4MRvtzplKOkEtH2GT8dHyuRTY6TLsdLy72cSmFPxm7YKcVDMfbuO3H7ENiDuct5GFkD8YbkmqV6r4K2Tasg_Nc5jYDCG7YL7J7vEAvo8DdzlNfQ2r_l_yFrDUJgJPG1bmPrm8E9EjWhuUaSYEW6jdnmD0lW0NdY',
+            'https://lh3.googleusercontent.com/aida-public/AB6AXuD7bT3vjRgEoR_xSWIol1J9uaaRKVocniQi-V5yLMV6UhladEokCad-tBpQk79JGJ8gJ6VhhN_j-JaYuTXn68aDRilkbh7vuWQLEvndQGRFD5K8QrdRgbgY4LdHrG5Ot2tbs6EsYlYVDX4vd1A6a1Nh6gvMuoftNNGxyivFT5m1CsJFXinz2WlgaCjcAGIjLj8e10-d9sXuhF_RqgvKKB93eph2kpq05dyB9nf4t7oJdHkZaAr-n07p8hcL1hwBoTWr4RYVfPgHesU',
+            'https://lh3.googleusercontent.com/aida-public/AB6AXuBqaGUJC5ZsK-lmfnrJABWwCW6J2mPaveo022vozBj-lA1vTOf-XyQMNA0liAWyedMAvFNaasucMbxzL_7gGn3EWLlq5noPDWiwNhftZLwna5sfrOjOwpYhyJ2RPGdq31DRWVM7T8JvBuP5Q0mrU8OF6G2j71YbQPqJovrnctXotjzUo3xLZCnJuIvK5bw71q3mHtxD6VJk9L9i9Vk95J0CTUdSf1zMFYsn450wRnwU1SQqeOST7f8yrIw0M9HGI47mHu0f39gOplo',
+            'https://lh3.googleusercontent.com/aida-public/AB6AXuBcrC-Gd3os7c1CZ6E5sdKqpBrB87kvvH9J8OTMMKxjIgeK48CHHUWjXr2hdGx6tQQG5rbF8MUfI3WLVFIM32yEDHCRK7KDHxyazy_w2G4j0VJFh1kYVKBTZsuRvCEYQ9sZrQva_XrcI98X42riHm2BiGmJld1LFjh03rXd7vDwFwQd3QbuKeR2Hk7-7HYBStD-Kj_obbROf9xaeTzH9kvRL6aVq4k3Y1F1PoA-gLg4SxKWDQ-jajKAdERmS5MXhUsdJ0z-oEq73EQ',
+            'https://lh3.googleusercontent.com/aida-public/AB6AXuAGXt4tn0c8XVk1RgDGRuKhn2tJBIHktfIiA13B4mbZU_GVpX3cDIQu1WCtcXr-J2ouYZXT6V2vvrMbna-in5RWBNvTZC6UEifSRf4aJwDOPmvraI7i64GNMSJAaPZy760VkZU88wRwPmKpW4dO7kGZtbifdyidX8jtc7uPGKeMsHmmOmXYGRmFv6agto710_REDK7ki7mi72gIp2ZiLA0gphR5_lAwMU6f6r9RF7BMKa2aGzs0hZK59aqSWgn_8IGd898UTYn3Nds'
+        ];
+        
+        // Switch gallery image
+        function switchGallery(thumbElement, index) {
+            // Update main image
+            document.getElementById('galleryMain').src = galleryImages[index];
+            
+            // Update active state
+            document.querySelectorAll('.gallery-thumb').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            thumbElement.classList.add('active');
+        }
+        
+        // View Management
+        const viewProductList = document.getElementById('viewProductList');
+        const viewProductDetail = document.getElementById('viewProductDetail');
+        const btnBackToList = document.getElementById('btnBackToList');
+        const btnNewProduct = document.getElementById('btnNewProduct');
+        const breadcrumbProducts = document.getElementById('breadcrumbProducts');
+        
+        // Product data mapping
+        const productData = {
+            1: { name: 'Montre Nova Gen 2', sku: 'WL-02-BLK', category: 'Électronique', price: '299,00 €', cost: '145,00 €', stock: 45, threshold: 10, status: 'ACTIF', margin: '51%', brand: 'NovaTech', material: 'Acier / Silicone', dimension: '44 mm', weight: '128g', origin: 'Japon' },
+            2: { name: 'Baskets Pro-Runner', sku: 'FT-44-RED', category: 'Mode', price: '89,90 €', cost: '42,50 €', stock: 3, threshold: 5, status: 'ACTIF', margin: '53%', brand: 'RunX', material: 'Textile / Caoutchouc', dimension: '42-46 EU', weight: '320g', origin: 'Vietnam' },
+            3: { name: 'Casque Studio-X', sku: 'AU-11-MAT', category: 'Électronique', price: '175,00 €', cost: '88,00 €', stock: 0, threshold: 5, status: 'INACTIF', margin: '50%', brand: 'AudioPro', material: 'Plastique / Mousse', dimension: 'Over-Ear', weight: '250g', origin: 'Chine' },
+            4: { name: 'Lunettes Aviator G1', sku: 'AC-99-GLD', category: 'Mode', price: '120,00 €', cost: '55,00 €', stock: 12, threshold: 5, status: 'ACTIF', margin: '54%', brand: 'VisionX', material: 'Métal / Verre', dimension: 'Standard', weight: '45g', origin: 'Italie' }
+        };
+        
+        // Show product detail
+        function showProductDetail(productId) {
+            const product = productData[productId];
+            if (!product) return;
+            
+            // Update detail view with product data
+            document.getElementById('detailProductName').textContent = product.name;
+            document.getElementById('breadcrumbProductName').textContent = 'Fiche Produit - ' + product.sku;
+            
+            // Hide list, show detail
+            viewProductList.classList.add('hidden');
+            viewProductDetail.classList.remove('hidden');
+            
+            // Toggle buttons
+            btnBackToList.style.display = 'flex';
+            btnNewProduct.style.display = 'none';
+            
+            // Scroll to top
+            document.querySelector('.main-content').scrollTop = 0;
+            
+            // Update URL hash
+            window.location.hash = 'product-' + productId;
+        }
+        
+        // Show product list
+        function showProductList() {
+            viewProductList.classList.remove('hidden');
+            viewProductDetail.classList.add('hidden');
+            btnBackToList.style.display = 'none';
+            btnNewProduct.style.display = 'flex';
+            window.location.hash = '';
+        }
+        
+        // Event Listeners
+        document.querySelectorAll('.btn-view-product').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                showProductDetail(productId);
+            });
+        });
+        
+        btnBackToList.addEventListener('click', showProductList);
+        
+        breadcrumbProducts.addEventListener('click', function(e) {
+            e.preventDefault();
+            showProductList();
+        });
+        
+        // Handle browser back/forward
+        window.addEventListener('hashchange', function() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#product-')) {
+                const productId = hash.replace('#product-', '');
+                if (productData[productId] && viewProductDetail.classList.contains('hidden')) {
+                    showProductDetail(productId);
+                }
+            } else if (!hash && viewProductList.classList.contains('hidden')) {
+                showProductList();
+            }
+        });
+        
+        // Check hash on load
+        if (window.location.hash.startsWith('#product-')) {
+            const productId = window.location.hash.replace('#product-', '');
+            if (productData[productId]) {
+                showProductDetail(productId);
+            }
+        }
+        
+        // Row click to view product (clicking anywhere on the row)
+        document.querySelectorAll('.table-custom tbody tr').forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't trigger if clicking action buttons
+                if (e.target.closest('button')) return;
+                const productId = this.getAttribute('data-product-id');
+                if (productId) showProductDetail(productId);
+            });
+            row.style.cursor = 'pointer';
+        });
+        
+        // Filter buttons
+        document.querySelectorAll('.btn-group .btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.parentElement.querySelectorAll('.btn').forEach(b => {
+                    b.classList.remove('shadow-sm', 'fw-bold', 'text-primary');
+                    b.classList.add('text-secondary');
+                });
+                this.classList.add('shadow-sm', 'fw-bold', 'text-primary');
+                this.classList.remove('text-secondary');
+            });
+        });
+        
+        // Save button animation
+        document.querySelectorAll('.btn-outline-custom').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Chargement...';
+                this.disabled = true;
+                setTimeout(() => {
+                    this.innerHTML = '<i class="bi bi-check-lg me-1"></i> Terminé !';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }, 1500);
+                }, 800);
+            });
+        });
+    </script>
+</body>
+</html>

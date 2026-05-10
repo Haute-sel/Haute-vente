@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>HauteShop - Pilotez toute votre entreprise depuis un seul écran</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-blue: #4F46E5;
+            --brand-navy: #1E293B;
+            --brand-light: #F8FAFC;
+        }
+        
+        .bg-brand-blue {
+            background-color: var(--brand-blue);
+        }
+        
+        .text-brand-blue {
+            color: var(--brand-blue);
+        }
+        
+        .bg-brand-navy {
+            background-color: var(--brand-navy);
+        }
+        
+        .bg-brand-light {
+            background-color: var(--brand-light);
+        }
+        
+        .btn-brand-blue {
+            background-color: var(--brand-blue);
+            color: white;
+            border: none;
+        }
+        
+        .btn-brand-blue:hover {
+            background-color: rgba(79, 70, 229, 0.9);
+            color: white;
+        }
+        
+        .btn-outline-brand {
+            color: var(--brand-blue);
+            border-color: var(--brand-blue);
+        }
+        
+        .btn-outline-brand:hover {
+            background-color: var(--brand-blue);
+            color: white;
+        }
+        
+        .hero-section {
+            min-height: 650px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(15, 23, 42, 1), rgba(15, 23, 42, 0.8), transparent);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+        
+        .feature-card {
+            min-width: 400px;
+            flex-shrink: 0;
+            border-radius: 1rem;
+        }
+        
+        .features-scroll {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .features-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .snap-start {
+            scroll-snap-align: start;
+        }
+        
+        .faq-btn {
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-btn:hover {
+            background-color: var(--bs-gray-50);
+        }
+        
+        .faq-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .rounded-4 {
+            border-radius: 2rem !important;
+        }
+        
+        .rounded-5 {
+            border-radius: 3rem !important;
+        }
+        
+        .icon-box {
+            width: 4rem;
+            height: 4rem;
+            background-color: var(--bs-gray-100);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .navbar-brand-custom {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--brand-blue);
+        }
+        
+        .section-padding {
+            padding: 8rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 4rem 0;
+            }
+            
+            .hero-section {
+                min-height: 500px;
+            }
+            
+            .feature-card {
+                min-width: 300px;
+            }
+        }
+        
+        .hover-lift {
+            transition: transform 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-4px);
+        }
+        
+        .accordion-button:not(.collapsed) {
+            background-color: var(--bs-gray-50);
+            color: var(--bs-dark);
+            font-weight: 600;
+        }
+        
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="text-dark">
+    <!-- BEGIN: MainHeader -->
+    <header class="sticky-top bg-white border-bottom">
+        <nav class="navbar navbar-expand-md">
+            <div class="container-fluid px-4 px-lg-5">
+                <!-- Logo -->
+                <a class="navbar-brand navbar-brand-custom" href="#">HAUTE-SHOP</a>
+                
+                <!-- Mobile menu button -->
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <!-- Navigation -->
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav mx-auto mb-2 mb-md-0">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-secondary" href="#">Accueil</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-secondary" href="#">Solutions</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-secondary" href="#">Pour qui</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-secondary" href="#">Contact</a>
+                        </li>
+                    </ul>
+                    
+                    <!-- CTA Buttons -->
+                    <div class="d-flex gap-3 align-items-center">
+                        <a href="Pages/login.html">
+                            <button class="btn btn-outline-secondary">Se connecter</button>
+                        </a>
+                        <button class="btn btn-brand-blue px-4 py-2">Demander une démo</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- END: MainHeader -->
+
+    <!-- BEGIN: HeroSection -->
+    <section class="hero-section">
+        <img alt="Team collaborating" class="hero-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB67z50tkBxrj8MU_rwyvm1unSxQ4_4qklftafOFaSX4u0YARJVPwqpLWDhEnfRIlQAraNrvMPPtJOzfCK0lYF76arv0f4oEDvut9auR7olrA9yW-Dk3dKRrGsf71PZgu7TYbaxF0fShrFF3gsEc8lAynY-fPRsYZK85fAygtln-K4AjbDdQz815S3Liz2jT8s4SB6X11WnZVhicKiPDrIG81CC2CpVcpWP59hRGMb8y23yOxffFHwvgNQSAqGiegVKotB18SYknJQ"/>
+        <div class="hero-overlay"></div>
+        <div class="container-fluid px-4 px-lg-5 h-100 d-flex align-items-center hero-content">
+            <div class="col-lg-7 text-white">
+                <h1 class="display-4 fw-bold mb-4">
+                    Pilotez toute votre entreprise depuis un seul écran.
+                </h1>
+                <p class="fs-5 mb-5 text-white-50">
+                    Suivez vos stocks en temps réel, gérez vos ventes et achats, maîtrisez votre trésorerie et supervisez votre personnel sur tous vos sites simplement depuis un navigateur.
+                </p>
+                <button class="btn btn-brand-blue btn-lg px-5 py-3 fw-semibold shadow">
+                    Demander une démo →
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- END: HeroSection -->
+
+    <!-- BEGIN: SolutionOverview -->
+    <section class="section-padding bg-white">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <img alt="Team meeting" class="img-fluid rounded-4 shadow-lg w-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl3NOv6oR3MJFGeD9H3x6Rkcj_J53_dxamtE1_z_5-Qr63TmFaSM3sYFIALfubazhXCQOW4KeGkWVQ70jwCJd5gzW5xdNEQjLmaA0uQoevDuhQJ_vKnK8j4nSnM3DnYsb9ouzZcKy9j0rkaDh2rPP9a3SOXmReEQOiNwOx2iAj1PY8O3iABhGGQYbYEytaS4pKgfIl56TDU94HcAORNuAjDL9V83kc9gxru8nvRF_0-W4N-NHOlolsNb8XNvxOTD3EcTJ_JgBa-yE"/>
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="display-5 fw-bold mb-4">
+                        Une solution complète pour la mission quotidienne de chacun.
+                    </h2>
+                    <div class="text-secondary fs-5">
+                        <p class="mb-4">
+                            Découvrez HauteShop une application qui intègre tous les aspects de la gestion de votre entreprise, des stocks à la trésorerie en passant par le suivi du personnel, permettant aux dirigeants et à leurs équipes de piloter plus facilement leurs activités et leurs informations.
+                        </p>
+                        <p>
+                            Elle fonctionne de manière fluide sur ordinateurs, tablettes ou téléphones, offrant une expérience cohérente en ligne ou hors ligne.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: SolutionOverview -->
+
+    <!-- BEGIN: ChallengesSection -->
+    <section class="section-padding bg-brand-light">
+        <div class="container-fluid px-4 px-lg-5">
+            <h2 class="display-5 fw-bold mb-5">Les défis que nous relevons.</h2>
+            <div class="row g-4">
+                <!-- Challenge 1 -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 p-4 rounded-4 hover-lift">
+                        <div class="icon-box mb-4 text-brand-blue">
+                            <i class="bi bi-eye fs-3"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Une vision aussi claire que vos ambitions.</h3>
+                        <p class="text-secondary mb-0">Nous nous engageons à vous offrir une vue en temps réel de toutes vos activités, pour des décisions plus éclairées dès aujourd'hui.</p>
+                    </div>
+                </div>
+                <!-- Challenge 2 -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 p-4 rounded-4 hover-lift">
+                        <div class="icon-box mb-4 text-brand-blue">
+                            <i class="bi bi-arrow-repeat fs-3"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Des données aussi fraîches que votre stock.</h3>
+                        <p class="text-secondary mb-0">Nous nous engageons à synchroniser vos ventes, vos achats et vos mouvements en temps réel, partout, tout le temps.</p>
+                    </div>
+                </div>
+                <!-- Challenge 3 -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 p-4 rounded-4 hover-lift">
+                        <div class="icon-box mb-4 text-brand-blue">
+                            <i class="bi bi-bar-chart fs-3"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">Une trésorerie aussi maîtrisée que vos objectifs.</h3>
+                        <p class="text-secondary mb-0">Nous nous engageons à vous donner un contrôle total sur vos caisses, vos dépenses et vos crédits, en toute transparence.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: ChallengesSection -->
+
+    <!-- BEGIN: FeaturesGrid -->
+    <section class="section-padding bg-white overflow-hidden">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="d-flex justify-content-between align-items-end mb-5">
+                <h2 class="display-5 fw-bold col-lg-8">Des fonctionnalités conçues pour les entrepreneurs de terrain.</h2>
+                <div class="d-flex gap-2 flex-shrink-0">
+                    <button class="btn btn-outline-secondary rounded-circle p-3">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary rounded-circle p-3">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="features-scroll d-flex gap-4 pb-4">
+                <!-- Feature 1 -->
+                <div class="feature-card card border p-4 snap-start shadow-sm">
+                    <div class="mb-4 text-brand-blue">
+                        <i class="bi bi-building fs-2"></i>
+                    </div>
+                    <h4 class="h5 fw-bold mb-3">Gestion multi-sites</h4>
+                    <p class="text-secondary mb-0">Une interface unique pour piloter tous vos magasins, dépôts ou bars, avec des données synchronisées en temps réel.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="feature-card card border p-4 snap-start shadow-sm">
+                    <div class="mb-4 text-brand-blue">
+                        <i class="bi bi-box-seam fs-2"></i>
+                    </div>
+                    <h4 class="h5 fw-bold mb-3">Catalogue & Stocks</h4>
+                    <p class="text-secondary mb-0">Gérez vos produits, gérez variantes et conditionnements, et suivez chaque mouvement avec précision.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="feature-card card border p-4 snap-start shadow-sm">
+                    <div class="mb-4 text-brand-blue">
+                        <i class="bi bi-calculator fs-2"></i>
+                    </div>
+                    <h4 class="h5 fw-bold mb-3">Point de vente simple</h4>
+                    <p class="text-secondary mb-0">Un interface claire pour vos caissiers, avec vente rapide et plusieurs modes de paiement (cash, mobile money, crédit).</p>
+                </div>
+                <!-- Feature 4 -->
+                <div class="feature-card card border p-4 snap-start shadow-sm">
+                    <div class="mb-4 text-brand-blue">
+                        <i class="bi bi-people fs-2"></i>
+                    </div>
+                    <h4 class="h5 fw-bold mb-3">Achats Fournisseurs</h4>
+                    <p class="text-secondary mb-0">Enregistrez vos achats, suivez vos commandes fournisseurs et automatisez vos réapprovisionnements.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: FeaturesGrid -->
+
+    <!-- BEGIN: RolesSection -->
+    <section class="section-padding bg-brand-light">
+        <div class="container-fluid px-4 px-lg-5">
+            <h2 class="display-5 fw-bold text-center mb-5">Conçu pour vos équipes, pensé pour chaque métier</h2>
+            <div class="card border-0 rounded-4 overflow-hidden shadow-lg">
+                <div class="row g-0">
+                    <div class="col-lg-6">
+                        <img alt="Staff in action" class="img-fluid w-100 h-100 object-fit-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAkKp1Q6JuEZYMHdWsypdug_JunP6evWptKKo3p2A6vmfFUQCM41e6aIbXrBCQJ_Zn86HfJQ4OYuqsLNC62FsdF0xDdCxq_aBgzKSh8oD3x35E-1txZssZC_RXUMBORknm3MIe6030TrxgOnmfwcMOrHCBRWEptFyyQvFa2ahzMLWs0dCUUcvdFLuYz55TC9lKjDOUnQjWUh-gdF8MDFhIF_3Go9yXIK8kfGzEOwIxiKhn0hPP7Nsdi32jsz7joLHkYqnf6lPq3jI"/>
+                    </div>
+                    <div class="col-lg-6 p-5 d-flex flex-column justify-content-center">
+                        <div class="mb-4">
+                            <button class="btn btn-link text-decoration-none text-secondary fs-5 fw-semibold p-0">Dirigeant / Administrateur</button>
+                        </div>
+                        <div class="mb-4">
+                            <button class="btn btn-link text-decoration-none text-secondary fs-5 fw-semibold p-0">Gestionnaire de site</button>
+                        </div>
+                        <div class="border-bottom border-primary border-2 pb-4 mb-3">
+                            <button class="btn btn-link text-decoration-none text-dark fs-5 fw-bold p-0 mb-3">Caissier / Vendeur</button>
+                            <p class="text-secondary fs-5 mb-3">Au contact des clients, vous avez besoin d'un outil rapide, fiable et simple, qui vous permet d'encaisser sans vous compliquer la tâche.</p>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <span class="badge bg-primary bg-opacity-10 text-brand-blue rounded-circle me-2">✓</span>
+                                    Interface intuitive pour des encaissements rapides
+                                </li>
+                                <li class="mb-2">
+                                    <span class="badge bg-primary bg-opacity-10 text-brand-blue rounded-circle me-2">✓</span>
+                                    Paiements multiples : cash, mobile money, crédits
+                                </li>
+                                <li class="mb-2">
+                                    <span class="badge bg-primary bg-opacity-10 text-brand-blue rounded-circle me-2">✓</span>
+                                    Aucune information superflue, rien pour se perdre
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <button class="btn btn-link text-decoration-none text-secondary fs-5 fw-semibold p-0">Comptable / Auditeur</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: RolesSection -->
+
+    <!-- BEGIN: FAQSection -->
+    <section class="section-padding bg-white">
+        <div class="container">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold text-center mb-5">Foire aux questions</h2>
+                <div class="accordion" id="faqAccordion">
+                    <!-- FAQ 1 -->
+                    <div class="faq-item">
+                        <button class="faq-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            <span class="fw-semibold">L'application peut-elle gérer plusieurs magasins, dépôts ou bars en même temps ?</span>
+                            <i class="bi bi-chevron-down text-secondary"></i>
+                        </button>
+                        <div id="faq1" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="px-4 pb-4 text-secondary">
+                                Oui, HauteShop est conçu pour gérer plusieurs sites simultanément avec une synchronisation en temps réel.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ 2 (Open by default) -->
+                    <div class="faq-item">
+                        <button class="faq-btn bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="true">
+                            <span class="fw-bold">Mes équipes (caissiers, vendeurs) auront-elles besoin d'une formation compliquée ?</span>
+                            <i class="bi bi-chevron-up text-secondary"></i>
+                        </button>
+                        <div id="faq2" class="collapse show" data-bs-parent="#faqAccordion">
+                            <div class="px-4 pb-4 text-secondary fs-5 border-top pt-4">
+                                Absolument, HauteShop est conçu pour plusieurs rôles, que l'interface soit simplifiée, intuitive, et sans fioriture superflue. Chaque rôle dispose de ses propres droits de visualisation et d'accès, tandis que la direction bénéficie d'une vue consolidée et en temps réel sur l'ensemble de l'activité.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ 3 -->
+                    <div class="faq-item">
+                        <button class="faq-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            <span class="fw-semibold">Que se passe-t-il si je n'ai pas de connexion Internet sur mon lieu de vente ?</span>
+                            <i class="bi bi-chevron-down text-secondary"></i>
+                        </button>
+                        <div id="faq3" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="px-4 pb-4 text-secondary">
+                                HauteShop fonctionne également en mode hors ligne et synchronise automatiquement les données une fois la connexion rétablie.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ 4 -->
+                    <div class="faq-item">
+                        <button class="faq-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            <span class="fw-semibold">Mes données financières et celles de mes clients sont-elles sécurisées ?</span>
+                            <i class="bi bi-chevron-down text-secondary"></i>
+                        </button>
+                        <div id="faq4" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="px-4 pb-4 text-secondary">
+                                La sécurité est notre priorité. Toutes les données sont chiffrées et stockées de manière sécurisée.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ 5 -->
+                    <div class="faq-item">
+                        <button class="faq-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            <span class="fw-semibold">Proposez-vous un accompagnement après la mise en place ?</span>
+                            <i class="bi bi-chevron-down text-secondary"></i>
+                        </button>
+                        <div id="faq5" class="collapse" data-bs-parent="#faqAccordion">
+                            <div class="px-4 pb-4 text-secondary">
+                                Oui, nous proposons un accompagnement complet et un support continu après la mise en place.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: FAQSection -->
+
+    <!-- BEGIN: CTA_Banner -->
+    <section class="py-5">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="bg-brand-navy rounded-5 p-5 text-center text-white position-relative overflow-hidden">
+                <div class="position-relative" style="z-index: 2;">
+                    <h2 class="display-5 fw-bold mb-4">Gardez le cap sur l'essentiel, anticipez le reste.</h2>
+                    <p class="fs-5 text-white-50 col-lg-8 mx-auto mb-5">
+                        Le tableau de bord unifié de HauteShop synthétise automatiquement vos stocks, votre trésorerie et vos ventes en temps réel. Pilotez chaque site, maîtrisez vos marges et prenez des décisions éclairées.
+                    </p>
+                    <button class="btn btn-light btn-lg px-5 py-3 fw-bold shadow">
+                        Demander une démo →
+                    </button>
+                </div>
+                <!-- Abstract Background shapes -->
+                <div class="position-absolute top-0 end-0 rounded-circle bg-brand-blue opacity-10" style="width: 16rem; height: 16rem; transform: translate(30%, -30%); background-color: var(--brand-blue);"></div>
+                <div class="position-absolute bottom-0 start-0 rounded-circle bg-brand-blue opacity-10" style="width: 24rem; height: 24rem; transform: translate(-30%, 30%); background-color: var(--brand-blue); opacity: 0.05;"></div>
+            </div>
+        </div>
+    </section>
+    <!-- END: CTA_Banner -->
+
+    <!-- BEGIN: ContactSection -->
+    <section class="section-padding bg-white">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="row g-5">
+                <div class="col-lg-5">
+                    <h2 class="display-5 fw-bold mb-4">Une question ? Une idée ? On vous répond.</h2>
+                    <div class="rounded-4 overflow-hidden shadow-lg">
+                        <img alt="Support person" class="img-fluid w-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXL6X9rOmSuDN-Nrl8lY5SPmm2btdfWdYha-8ioPyRQlOxTEXlwFZ6a2eXp-CqOKqJ5ClX2paDf41AwCxdzakb9xWqIxI8rvO1KkNESzovp1ERQLwUDIih0HcT1JBcMTzszGctnJavooWqbN0iGmzNakhBl5rFly-cUXd9dYavrTRWguI9IaaUeJEXDk9QrH7G8CFDr36M43q7doKJQYpPNmHGkFOB5SRyuIw_JOIKLIdNodbiQwvaKNAyR67HbwIWDXDsYhVjhH4"/>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="bg-brand-light p-4 p-lg-5 rounded-4 border">
+                        <h3 class="h4 fw-bold mb-3">Contactez-nous</h3>
+                        <p class="text-secondary fw-medium mb-4 text-uppercase small">POUR PLUS D'INFORMATIONS OU POUR UNE DEMONSTRATION PERSONALISÉE.</p>
+                        <form action="#" class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-uppercase small">Nom Complet *</label>
+                                <input class="form-control form-control-lg" placeholder="John Doe" type="text"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-uppercase small">Email *</label>
+                                <input class="form-control form-control-lg" placeholder="contact@example.com" type="email"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-uppercase small">Téléphone</label>
+                                <input class="form-control form-control-lg" placeholder="+33 0 00 00 00 00" type="tel"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-uppercase small">Entreprise</label>
+                                <input class="form-control form-control-lg" placeholder="Ma Société" type="text"/>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold text-uppercase small">Sujet *</label>
+                                <select class="form-select form-select-lg">
+                                    <option>Demande de démo</option>
+                                    <option>Information tarifaire</option>
+                                    <option>Partenariat</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold text-uppercase small">Message *</label>
+                                <textarea class="form-control form-control-lg" placeholder="Comment pouvons-nous vous aider ?" rows="5"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-brand-blue btn-lg w-100 py-3 fw-bold shadow" type="submit">Envoyer le message</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END: ContactSection -->
+
+    <!-- BEGIN: MainFooter -->
+    <footer class="bg-white border-top pt-5 pb-4">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="row g-4 mb-5">
+                <!-- Logo & Bio -->
+                <div class="col-md-6 col-lg-4">
+                    <span class="navbar-brand-custom d-block mb-3">HauteShop</span>
+                    <p class="text-secondary mb-4">
+                        Nous fournissons une solution intuitive et sans fioritures pour piloter toutes vos opérations de vente en toute sérénité.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a class="text-secondary fs-5" href="#"><i class="bi bi-linkedin"></i></a>
+                        <a class="text-secondary fs-5" href="#"><i class="bi bi-twitter-x"></i></a>
+                    </div>
+                </div>
+                <!-- Entreprise Links -->
+                <div class="col-6 col-md-3 col-lg-2">
+                    <h5 class="fw-bold mb-3">Entreprise</h5>
+                    <ul class="list-unstyled text-secondary">
+                        <li class="mb-2"><a class="text-secondary text-decoration-none" href="#">À propos de HauteShop</a></li>
+                        <li class="mb-2"><a class="text-secondary text-decoration-none" href="#">Contact</a></li>
+                        <li class="mb-2"><a class="text-secondary text-decoration-none" href="#">Confidentialité</a></li>
+                        <li class="mb-2"><a class="text-secondary text-decoration-none" href="#">Conditions d'utilisation</a></li>
+                    </ul>
+                </div>
+                <!-- Ressources Links -->
+                <div class="col-6 col-md-3 col-lg-2">
+                    <h5 class="fw-bold mb-3">Ressources</h5>
+                    <ul class="list-unstyled text-secondary">
+                        <li class="mb-2"><a class="text-secondary text-decoration-none" href="#">FAQ</a></li>
+                        <li class="mb-2"><a class="text-secondary text-decoration-none" href="#">Solutions</a></li>
+                        <li class="mb-2"><a class="text-secondary text-decoration-none" href="#">Support</a></li>
+                        <li class="mb-2"><a class="text-secondary text-decoration-none" href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <!-- Nous Joindre -->
+                <div class="col-md-6 col-lg-4">
+                    <h5 class="fw-bold mb-3">Nos Coordonnées</h5>
+                    <ul class="list-unstyled text-secondary">
+                        <li class="mb-2">contact@hauteshop.com</li>
+                        <li class="mb-2">+243 000 000 000</li>
+                        <li class="mt-3"><a class="text-brand-blue fw-bold text-decoration-none" href="#">Demander une démo →</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Copyright -->
+            <div class="border-top pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center small text-secondary">
+                <p class="mb-2 mb-md-0">© 2024 HauteShop. Tous droits réservés.</p>
+                <div class="d-flex align-items-center">
+                    <span class="d-flex align-items-center">
+                        <i class="bi bi-globe me-2"></i> Français (FR)
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- END: MainFooter -->
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

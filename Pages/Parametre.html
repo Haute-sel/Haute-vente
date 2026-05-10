@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>HAUT-SHOP - Paramètres de l'application</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary: #3b42e3;
+            --primary-dark: #2d33b5;
+            --sidebar-text: #4B5563;
+            --sidebar-width: 16rem;
+            --badge-blue-bg: #e0e7ff;
+            --badge-blue-text: #3730a3;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fb;
+            overflow: hidden;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: white;
+            border-right: 1px solid #e5e7eb;
+            flex-shrink: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0.75rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.15s ease;
+            font-size: 0.875rem;
+        }
+        
+        .sidebar-link:hover {
+            background-color: #f9fafb;
+        }
+        
+        .sidebar-link.active {
+            background-color: #f8fafc;
+            border-left: 4px solid var(--primary);
+            color: #111827;
+            font-weight: 600;
+        }
+        
+        .sidebar-link.danger {
+            color: #ef4444;
+        }
+        
+        .sidebar-link.danger:hover {
+            background-color: #fef2f2;
+        }
+        
+        .nav-section-title {
+            font-size: 0.625rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Topbar */
+        .topbar {
+            height: 4rem;
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.625rem;
+            font-weight: 700;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .content-scroll {
+            overflow-y: auto;
+            height: calc(100vh - 4rem);
+        }
+        
+        /* Tabs */
+        .nav-tabs-custom .nav-link {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 1rem 1rem;
+            margin-right: 2rem;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+        
+        .nav-tabs-custom .nav-link:hover {
+            color: #374151;
+            border-bottom-color: #d1d5db;
+        }
+        
+        .nav-tabs-custom .nav-link.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            background: transparent;
+            font-weight: 600;
+        }
+        
+        /* Form Controls */
+        .form-control-custom {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            padding: 0.625rem 0.75rem;
+            font-size: 0.875rem;
+            background-color: #f9fafb;
+            transition: all 0.2s ease;
+        }
+        
+        .form-control-custom:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(59, 66, 227, 0.15);
+            background-color: white;
+        }
+        
+        .form-label-custom {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .input-group-addon {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .input-group .form-control-custom {
+            border-right: none;
+        }
+        
+        .input-group .form-control-custom + .input-group-addon {
+            border-left: none;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+            font-weight: 700;
+            font-size: 0.625rem;
+            text-transform: uppercase;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            transition: all 0.15s ease;
+        }
+        
+        .btn-outline-custom:hover {
+            background-color: #f9fafb;
+        }
+        
+        /* Cards */
+        .stat-card {
+            background: white;
+            border: 1px solid #f3f4f6;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .config-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        /* Table */
+        .table-custom th {
+            font-size: 0.625rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1rem 1.5rem;
+            background-color: white;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .table-custom td {
+            padding: 1.25rem 1.5rem;
+            vertical-align: middle;
+        }
+        
+        .table-custom tbody tr {
+            transition: background-color 0.15s ease;
+        }
+        
+        .table-custom tbody tr:hover {
+            background-color: #f9fafb;
+        }
+        
+        .tab-content > .tab-pane {
+            display: none;
+        }
+        
+        .tab-content > .active {
+            display: block;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                z-index: 1050;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+            
+            .sidebar-backdrop {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 1049;
+            }
+            
+            .sidebar-backdrop.show {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Backdrop (Mobile) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+    <div class="d-flex">
+        <!-- BEGIN: Sidebar -->
+        <aside class="sidebar d-flex flex-column" id="sidebar">
+            <div class="p-4">
+                <h1 class="h4 fw-bold d-flex align-items-center mb-0">
+                    <span class="text-primary">HAUT</span><span class="text-secondary">-SHOP</span>
+                </h1>
+            </div>
+            <div class="px-3 py-2 flex-grow-1 overflow-auto">
+                <p class="nav-section-title">Navigation</p>
+                <nav class="d-flex flex-column gap-1">
+                    <a class="sidebar-link" href="Dashboard.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-house-door"></i>
+                            <span class="fw-medium">Tableau de bord</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="gestionSites.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-building"></i>
+                            <span class="fw-medium">Sites</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="produitStock.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-box-seam"></i>
+                            <span class="fw-medium">Produits &amp; Stock</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="finances.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span class="fw-medium">Finances</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="gestionPersonnel.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-people"></i>
+                            <span class="fw-medium">Personnel</span>
+                        </div>
+                        <i class="bi bi-chevron-right small"></i>
+                    </a>
+                    <a class="sidebar-link active" href="parametre.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-gear"></i>
+                            <span class="fw-medium">Paramètre</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                </nav>
+            </div>
+            <div class="p-3 border-top">
+                <a class="sidebar-link danger" href="#">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span class="fw-medium">Déconnexion</span>
+                    </div>
+                    <i class="bi bi-chevron-right small text-danger"></i>
+                </a>
+            </div>
+        </aside>
+        <!-- END: Sidebar -->
+
+        <!-- Main Content -->
+        <div class="main-content d-flex flex-column">
+            <!-- BEGIN: TopHeader -->
+            <header class="topbar d-flex align-items-center justify-content-between px-4 sticky-top bg-white border-bottom z-10">
+                <div class="d-flex align-items-center gap-2 small">
+                    <button class="btn btn-light d-lg-none me-2" onclick="toggleSidebar()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <span class="fw-semibold text-dark">Accueil</span>
+                    <i class="bi bi-chevron-right text-secondary" style="font-size: 0.75rem;"></i>
+                    <span class="text-secondary">Paramètres</span>
+                </div>
+                <div class="d-flex align-items-center gap-4">
+                    <button class="btn btn-link text-secondary p-1">
+                        <i class="bi bi-moon fs-5"></i>
+                    </button>
+                    <button class="btn btn-link text-secondary p-1 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle border border-2 border-dark d-flex align-items-center justify-content-center" style="width: 2.5rem; height: 2.5rem;">
+                            <i class="bi bi-person text-dark fs-5"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- END: TopHeader -->
+
+            <!-- BEGIN: Main Content -->
+            <main class="content-scroll p-4 p-lg-5">
+                <!-- Page Header -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+                    <h1 class="h4 fw-bold text-dark mb-0 border-start border-4 border-primary ps-3">Paramètres de l'application</h1>
+                    <button class="btn btn-primary-custom d-flex align-items-center gap-2" id="btnSaveSettings">
+                        <i class="bi bi-download"></i>
+                        Enregistrer les modifications
+                    </button>
+                </div>
+
+                <!-- BEGIN: Tabs Navigation -->
+                <ul class="nav nav-tabs-custom border-bottom mb-4" id="settingsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-selected="true">
+                            <i class="bi bi-sliders me-2"></i>Général
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="devises-tab" data-bs-toggle="tab" data-bs-target="#devises" type="button" role="tab" aria-selected="false">
+                            <i class="bi bi-currency-exchange me-2"></i>Devises &amp; Taux
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="seuils-tab" data-bs-toggle="tab" data-bs-target="#seuils" type="button" role="tab" aria-selected="false">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Seuils d'alerte
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="roles-tab" data-bs-toggle="tab" data-bs-target="#roles" type="button" role="tab" aria-selected="false">
+                            <i class="bi bi-shield-lock me-2"></i>Rôles &amp; Permissions
+                        </button>
+                    </li>
+                </ul>
+                <!-- END: Tabs Navigation -->
+
+                <!-- BEGIN: Tab Content -->
+                <div class="tab-content" id="settingsTabContent">
+                    <!-- TAB 1: Général -->
+                    <div class="tab-pane fade show active" id="general" role="tabpanel">
+                        <div class="config-card p-4 p-lg-5">
+                            <h3 class="h6 fw-bold text-dark mb-4">Informations générales</h3>
+                            
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label-custom d-block">Nom de l'entreprise</label>
+                                    <input class="form-control form-control-custom" type="text" value="Haute Shop SARL"/>
+                                    <p class="small text-secondary mt-2">Ce nom apparaîtra sur les rapports et factures.</p>
+                                </div>
+                                
+                                <div class="col-md-6"></div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label-custom d-block">Devise principale</label>
+                                    <select class="form-select form-control-custom">
+                                        <option selected>Franc Congolais (CDF)</option>
+                                        <option>US Dollar (USD)</option>
+                                        <option>Euro (EUR)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label-custom d-block">Langue par défaut</label>
+                                    <select class="form-select form-control-custom">
+                                        <option selected>Français</option>
+                                        <option>English</option>
+                                        <option>Lingala</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label-custom d-block">Format de date</label>
+                                    <select class="form-select form-control-custom">
+                                        <option selected>31/12/2024 (Jour/Mois/Année)</option>
+                                        <option>12/31/2024 (Mois/Jour/Année)</option>
+                                        <option>2024-12-31 (Année-Mois-Jour)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: Devises & Taux -->
+                    <div class="tab-pane fade" id="devises" role="tabpanel">
+                        <!-- Taux de Change -->
+                        <div class="config-card p-4 p-lg-5 mb-4">
+                            <div class="d-flex align-items-center gap-2 mb-4">
+                                <div class="bg-primary bg-opacity-10 rounded p-1">
+                                    <i class="bi bi-currency-exchange text-primary"></i>
+                                </div>
+                                <h3 class="h6 fw-bold text-dark mb-0">Taux de change</h3>
+                            </div>
+                            
+                            <div class="row g-4 align-items-end">
+                                <div class="col-md-4">
+                                    <label class="form-label-custom d-block">Devise Source</label>
+                                    <select class="form-select form-control-custom">
+                                        <option>Dollar Américain (USD)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-custom d-block">Devise Cible</label>
+                                    <select class="form-select form-control-custom">
+                                        <option>Franc Congolais (CDF)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-custom d-block">Taux de Conversion</label>
+                                    <div class="input-group">
+                                        <input class="form-control form-control-custom fw-bold text-primary" type="text" value="2850,00" readonly/>
+                                        <span class="input-group-addon rounded-end px-3 small fw-bold">CDF/USD</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-primary d-flex align-items-center gap-2 mt-4 mb-0 py-2 small">
+                                <i class="bi bi-info-circle"></i>
+                                1 USD = 2 850 CDF (Mis à jour le 26/05/2024 par Système)
+                            </div>
+                        </div>
+                        
+                        <!-- Stats -->
+                        <div class="row g-4">
+                            <div class="col-6 col-md-3">
+                                <div class="stat-card">
+                                    <h4 class="small fw-bold text-secondary text-uppercase mb-2">Devises Actives</h4>
+                                    <p class="display-6 fw-extrabold text-dark mb-0">02</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="stat-card">
+                                    <h4 class="small fw-bold text-secondary text-uppercase mb-2">Mise à jour auto</h4>
+                                    <p class="display-6 fw-extrabold text-success mb-0">Activé</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="stat-card">
+                                    <h4 class="small fw-bold text-secondary text-uppercase mb-2">Dernier Sync</h4>
+                                    <p class="display-6 fw-extrabold text-dark mb-0">Aujourd'hui</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="stat-card">
+                                    <h4 class="small fw-bold text-secondary text-uppercase mb-2">Alertes taux</h4>
+                                    <p class="display-6 fw-extrabold text-dark mb-0">04</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: Seuils d'alerte -->
+                    <div class="tab-pane fade" id="seuils" role="tabpanel">
+                        <div class="config-card p-4 p-lg-5">
+                            <h3 class="h6 fw-bold text-dark mb-4">Configuration des alertes</h3>
+                            
+                            <!-- Section: Gestion des stocks -->
+                            <div class="mb-5">
+                                <h4 class="small fw-bold text-dark mb-4">Gestion des stocks</h4>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label-custom d-block">Seuil de stock minimum (global)</label>
+                                        <div class="input-group">
+                                            <input class="form-control form-control-custom" type="text" value="5"/>
+                                            <span class="input-group-addon rounded-end px-3">unités</span>
+                                        </div>
+                                        <p class="small text-secondary fst-italic mt-1 mb-0" style="font-size: 0.625rem;">Alerte si le stock d'un produit passe en dessous de cette valeur.</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label-custom d-block">Seuil de rupture</label>
+                                        <div class="input-group">
+                                            <input class="form-control form-control-custom" type="text" value="0"/>
+                                            <span class="input-group-addon rounded-end px-3">unités</span>
+                                        </div>
+                                        <p class="small text-secondary fst-italic mt-1 mb-0" style="font-size: 0.625rem;">Considérer le produit comme "en rupture" à ce niveau.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Section: Gestion des crédits -->
+                            <div>
+                                <h4 class="small fw-bold text-dark mb-4">Gestion des crédits</h4>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label-custom d-block">Plafond de crédit client par défaut</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon rounded-start px-3">$</span>
+                                            <input class="form-control form-control-custom" type="text" value="500"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label-custom d-block">Jours avant échéance pour alerte</label>
+                                        <div class="input-group">
+                                            <input class="form-control form-control-custom" type="text" value="3"/>
+                                            <span class="input-group-addon rounded-end px-3">jours</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: Rôles & Permissions -->
+                    <div class="tab-pane fade" id="roles" role="tabpanel">
+                        <div class="config-card">
+                            <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+                                <h2 class="h6 fw-bold text-dark mb-0">Liste des rôles</h2>
+                                <button class="btn btn-outline-custom d-flex align-items-center gap-1">
+                                    <i class="bi bi-plus-lg"></i>
+                                    Nouveau rôle
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-custom mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Rôle</th>
+                                            <th>Description</th>
+                                            <th class="text-center">Utilisateurs</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-bold text-dark">Administrateur</td>
+                                            <td class="text-secondary">Accès complet à tous les modules et paramètres.</td>
+                                            <td class="text-center">3</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-link text-secondary p-1">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-dark">Gestionnaire de site</td>
+                                            <td class="text-secondary">Gère les stocks, les achats et les ventes de son site.</td>
+                                            <td class="text-center">5</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-link text-secondary p-1">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-dark">Caissier / Vendeur</td>
+                                            <td class="text-secondary">Enregistre les ventes et consulte sa caisse.</td>
+                                            <td class="text-center">12</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-link text-secondary p-1">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-dark">Comptable</td>
+                                            <td class="text-secondary">Accès aux données financières et aux rapports.</td>
+                                            <td class="text-center">2</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-link text-secondary p-1">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END: Tab Content -->
+            </main>
+            <!-- END: Main Content -->
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript -->
+    <script>
+        // Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
+        }
+        
+        // Close sidebar when clicking a link (mobile)
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 992) {
+                    toggleSidebar();
+                }
+            });
+        });
+        
+        // Save Settings Button
+        document.getElementById('btnSaveSettings').addEventListener('click', function() {
+            const activeTab = document.querySelector('.nav-tabs-custom .nav-link.active');
+            const tabName = activeTab ? activeTab.textContent.trim() : 'Paramètres';
+            
+            // Simulate save
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enregistrement...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="bi bi-check-lg me-2"></i>Enregistré !';
+                this.classList.add('btn-success');
+                this.classList.remove('btn-primary-custom');
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="bi bi-download me-2"></i>Enregistrer les modifications';
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-primary-custom');
+                    this.disabled = false;
+                }, 2000);
+            }, 1000);
+        });
+        
+        // Tab switching with URL hash support
+        function activateTabFromHash() {
+            const hash = window.location.hash;
+            if (hash) {
+                const tab = document.querySelector(`[data-bs-target="${hash}"]`);
+                if (tab) {
+                    const bsTab = new bootstrap.Tab(tab);
+                    bsTab.show();
+                }
+            }
+        }
+        
+        // Listen for tab changes to update URL hash
+        document.querySelectorAll('#settingsTabs button[data-bs-toggle="tab"]').forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function(e) {
+                const target = e.target.getAttribute('data-bs-target');
+                window.location.hash = target;
+            });
+        });
+        
+        // Activate tab from URL hash on load
+        activateTabFromHash();
+        
+        // Handle browser back/forward
+        window.addEventListener('hashchange', activateTabFromHash);
+    </script>
+</body>
+</html>

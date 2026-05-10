@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>HauteShop - Gestion des Finances</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --primary: #1c1fcd;
+            --primary-container: #3b42e3;
+            --primary-fixed: #e0e0ff;
+            --secondary: #585c82;
+            --secondary-container: #ced1fe;
+            --secondary-fixed: #dfe0ff;
+            --error: #ba1a1a;
+            --error-container: #ffdad6;
+            --surface: #f8f9ff;
+            --surface-container-lowest: #ffffff;
+            --surface-container-low: #eff4ff;
+            --surface-container: #e5eeff;
+            --surface-container-high: #dce9ff;
+            --on-surface: #0b1c30;
+            --on-surface-variant: #454555;
+            --on-background: #0b1c30;
+            --outline-variant: #c6c5d8;
+            --outline: #767587;
+            --tertiary: #414445;
+            --tertiary-container: #595b5c;
+            --tertiary-fixed: #e1e3e4;
+            --inverse-surface: #213145;
+            --sidebar-width: 16rem;
+            --topbar-height: 4rem;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--surface);
+            color: var(--on-surface);
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--surface-container-lowest);
+            border-right: 1px solid var(--outline-variant);
+            height: 100vh;
+            flex-shrink: 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            color: var(--on-surface-variant);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.15s ease;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--surface-container-low);
+        }
+        
+        .sidebar-link.active {
+            background-color: var(--secondary-fixed);
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        /* Topbar */
+        .topbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            height: var(--topbar-height);
+            background-color: var(--surface-container-lowest);
+            border-bottom: 1px solid var(--outline-variant);
+            z-index: 1030;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--topbar-height);
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .stat-card {
+            background: var(--surface-container-lowest);
+            border: 1px solid var(--outline-variant);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .icon-circle {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .badge-category {
+            font-size: 0.625rem;
+            font-weight: 800;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+        }
+        
+        .badge-vente {
+            background-color: #e0e0ff;
+            color: #1c1fcd;
+        }
+        
+        .badge-achat {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+        
+        .badge-charge {
+            background-color: #e1e3e4;
+            color: #414445;
+        }
+        
+        .badge-loyer {
+            background-color: #e1e3e4;
+            color: #414445;
+        }
+        
+        .badge-stock {
+            background-color: #dfe0ff;
+            color: #585c82;
+        }
+        
+        /* Table */
+        .table-custom thead th {
+            background-color: var(--on-background);
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1rem 1.5rem;
+            border: none;
+        }
+        
+        .table-custom tbody td {
+            padding: 1rem 1.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--outline-variant);
+        }
+        
+        .table-custom tbody tr {
+            transition: background-color 0.15s ease;
+        }
+        
+        .table-custom tbody tr:hover {
+            background-color: var(--surface-container-low);
+        }
+        
+        .table-custom tbody tr.row-highlight {
+            background-color: var(--surface-container-low);
+        }
+        
+        .pagination-btn {
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 1px solid var(--outline-variant);
+            background: white;
+            color: var(--on-surface-variant);
+            transition: all 0.15s ease;
+        }
+        
+        .pagination-btn:hover {
+            background-color: var(--surface-container-low);
+        }
+        
+        .pagination-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-container);
+            border-color: var(--primary-container);
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            opacity: 0.9;
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 66, 227, 0.3);
+        }
+        
+        .btn-outline-custom {
+            border: 1px solid var(--outline);
+            background: transparent;
+            color: var(--on-surface-variant);
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.15s ease;
+        }
+        
+        .btn-outline-custom:hover {
+            background-color: var(--surface-container-low);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            width: 0.5rem;
+            height: 0.5rem;
+            background-color: var(--error);
+            border-radius: 50%;
+        }
+        
+        /* Modal */
+        .modal-content-custom {
+            border-radius: 0.75rem;
+            border: none;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+        }
+        
+        .form-label-custom {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control-custom, .form-select-custom {
+            border: 1px solid var(--outline-variant);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            background-color: var(--surface-container-low);
+            transition: all 0.2s ease;
+        }
+        
+        .form-control-custom:focus, .form-select-custom:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(28, 31, 205, 0.15);
+            background-color: white;
+        }
+        
+        .btn-payment-method {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            border: 1px solid var(--outline-variant);
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: white;
+        }
+        
+        .btn-payment-method:hover, .btn-payment-method.active {
+            background-color: var(--primary-fixed);
+            border-color: var(--primary);
+        }
+        
+        .btn-type-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 2px solid var(--outline);
+            border-radius: 0.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: white;
+        }
+        
+        .btn-type-toggle.active {
+            border-color: var(--primary);
+            background-color: var(--primary-fixed);
+            color: var(--primary);
+        }
+        
+        .chart-bar {
+            flex: 1;
+            border-radius: 0.25rem 0.25rem 0 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+        
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .modal.fade .modal-dialog {
+            animation: modalSlideUp 0.3s ease-out;
+        }
+        
+        @media (max-width: 991.98px) {
+            .sidebar {
+                left: -100%;
+                transition: left 0.3s ease;
+            }
+            .sidebar.show { left: 0; }
+            .topbar { left: 0; }
+            .main-content { margin-left: 0; }
+            .sidebar-backdrop {
+                display: none;
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 1039;
+            }
+            .sidebar-backdrop.show { display: block; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+    <!-- BEGIN: Sidebar -->
+        <aside class="sidebar d-flex flex-column" id="sidebar">
+            <div class="p-4">
+                <h1 class="h4 fw-bold d-flex align-items-center mb-0">
+                    <span class="text-primary">HAUT</span><span class="text-secondary">-SHOP</span>
+                </h1>
+            </div>
+            <div class="px-3 py-2 flex-grow-1 overflow-auto">
+                <p class="nav-section-title">Navigation</p>
+                <nav class="d-flex flex-column gap-1">
+                    <a class="sidebar-link" href="Dashboard.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-house-door"></i>
+                            <span class="fw-medium">Tableau de bord</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="gestionSites.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-building"></i>
+                            <span class="fw-medium">Sites</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="produitStock.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-box-seam"></i>
+                            <span class="fw-medium">Produits &amp; Stock</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link active" href="finances.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span class="fw-medium">Finances</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="gestionPersonnel.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-people"></i>
+                            <span class="fw-medium">Personnel</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                    <a class="sidebar-link" href="parametre.html">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-gear"></i>
+                            <span class="fw-medium">Paramètre</span>
+                        </div>
+                        <i class="bi bi-chevron-right small text-secondary"></i>
+                    </a>
+                </nav>
+            </div>
+            <div class="p-3 border-top">
+                <a class="sidebar-link danger" href="#">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span class="fw-medium">Déconnexion</span>
+                    </div>
+                    <i class="bi bi-chevron-right small text-danger"></i>
+                </a>
+            </div>
+        </aside>
+        <!-- END: Sidebar -->
+
+    <!-- BEGIN: TopHeader -->
+            <header class="topbar d-flex align-items-center justify-content-between px-4 sticky-top bg-white border-bottom z-10">
+                <div class="d-flex align-items-center gap-2 small">
+                    <button class="btn btn-light d-lg-none me-2" onclick="toggleSidebar()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <span class="fw-semibold text-dark">Accueil</span>
+                    <i class="bi bi-chevron-right text-secondary" style="font-size: 0.75rem;"></i>
+                    <span class="text-secondary">Finances</span>
+                </div>
+                <div class="d-flex align-items-center gap-4">
+                    <button class="btn btn-link text-secondary p-1">
+                        <i class="bi bi-moon fs-5"></i>
+                    </button>
+                    <button class="btn btn-link text-secondary p-1 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle border border-2 border-dark d-flex align-items-center justify-content-center" style="width: 2.5rem; height: 2.5rem;">
+                            <i class="bi bi-person text-dark fs-5"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- END: TopHeader -->
+
+    <!-- BEGIN: Main Content -->
+    <main class="main-content p-4 p-lg-5">
+        <div class="container-fluid" style="max-width: 1440px;">
+            
+            <!-- Page Header -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end gap-3 mb-4">
+                <div>
+                    <h2 class="h3 fw-bold text-dark mb-1">Journal des Transactions</h2>
+                    <p class="text-secondary mb-0">Analysez et gérez vos flux financiers en temps réel.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-custom d-flex align-items-center gap-2">
+                        <i class="bi bi-download"></i> Exporter le rapport
+                    </button>
+                    <button class="btn btn-primary-custom d-flex align-items-center gap-2" id="btnAddTransaction">
+                        <i class="bi bi-plus-circle"></i> Ajouter Transaction
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="icon-circle bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-trending-up fs-5"></i>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success small fw-bold">+12.5%</span>
+                        </div>
+                        <p class="small text-secondary fw-bold mb-1">Recettes Totales</p>
+                        <h3 class="h4 fw-extrabold text-dark mb-0">45,280.00 €</h3>
+                    </div>
+                </div>
+                <div class="col-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="icon-circle bg-danger bg-opacity-10 text-danger">
+                                <i class="bi bi-trending-down fs-5"></i>
+                            </div>
+                            <span class="badge bg-danger bg-opacity-10 text-danger small fw-bold">-4.2%</span>
+                        </div>
+                        <p class="small text-secondary fw-bold mb-1">Dépenses Totales</p>
+                        <h3 class="h4 fw-extrabold text-dark mb-0">12,450.00 €</h3>
+                    </div>
+                </div>
+                <div class="col-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="icon-circle bg-secondary bg-opacity-10" style="color: var(--secondary);">
+                                <i class="bi bi-bank fs-5"></i>
+                            </div>
+                        </div>
+                        <p class="small text-secondary fw-bold mb-1">Solde Net</p>
+                        <h3 class="h4 fw-extrabold text-dark mb-0">32,830.00 €</h3>
+                    </div>
+                </div>
+                <div class="col-6 col-xl-3">
+                    <div class="stat-card bg-dark text-white position-relative overflow-hidden">
+                        <div class="position-relative" style="z-index: 1;">
+                            <p class="small text-white-50 fw-bold mb-1">Prévisions Mensuelles</p>
+                            <h3 class="h4 fw-extrabold text-white mb-3">52,000.00 €</h3>
+                            <div class="progress bg-white bg-opacity-25" style="height: 0.5rem;">
+                                <div class="progress-bar bg-white" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <i class="bi bi-graph-up position-absolute bottom-0 end-0 opacity-10" style="font-size: 6rem; transform: translate(1rem, 1rem);"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction Table -->
+            <div class="stat-card overflow-hidden p-0 mb-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 p-4 border-bottom">
+                    <h3 class="h5 fw-bold mb-0">Journal des Flux</h3>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <span class="small fw-bold text-secondary me-2">Filtrer par:</span>
+                        <select class="form-select form-select-sm bg-light border-0 rounded-3" style="width: auto;">
+                            <option>Toutes les catégories</option>
+                            <option>Vente</option>
+                            <option>Achat</option>
+                            <option>Charge</option>
+                        </select>
+                        <select class="form-select form-select-sm bg-light border-0 rounded-3" style="width: auto;">
+                            <option>Ce mois</option>
+                            <option>Mois dernier</option>
+                            <option>Année 2023</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Catégorie</th>
+                                <th>Mode de paiement</th>
+                                <th class="text-end">Montant</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Row 1 -->
+                            <tr>
+                                <td class="small fw-medium">12 Oct 2023</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 2rem; height: 2rem;">
+                                            <i class="bi bi-bag text-primary small"></i>
+                                        </div>
+                                        <span class="fw-bold small text-dark">Commande Client #HS-8921</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge-category badge-vente">Vente</span></td>
+                                <td class="small text-secondary"><i class="bi bi-credit-card me-1"></i> Carte Bancaire</td>
+                                <td class="text-end fw-extrabold text-success small">+ 1,240.00 €</td>
+                                <td>
+                                    <span class="small fw-bold text-success">
+                                        <span class="d-inline-block bg-success rounded-circle me-1" style="width: 0.5rem; height: 0.5rem;"></span> Complété
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-link text-secondary p-1">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 2 -->
+                            <tr class="row-highlight">
+                                <td class="small fw-medium">11 Oct 2023</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-circle bg-danger bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 2rem; height: 2rem;">
+                                            <i class="bi bi-box text-danger small"></i>
+                                        </div>
+                                        <span class="fw-bold small text-dark">Réapprovisionnement Stock</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge-category badge-achat">Achat</span></td>
+                                <td class="small text-secondary"><i class="bi bi-bank me-1"></i> Virement</td>
+                                <td class="text-end fw-extrabold text-danger small">- 4,800.00 €</td>
+                                <td>
+                                    <span class="small fw-bold text-primary">
+                                        <span class="d-inline-block bg-primary rounded-circle me-1" style="width: 0.5rem; height: 0.5rem;"></span> En cours
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-link text-secondary p-1">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Row 3 -->
+                            <tr>
+                                <td class="small fw-medium">10 Oct 2023</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-circle bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center" style="width: 2rem; height: 2rem;">
+                                            <i class="bi bi-lightning text-secondary small"></i>
+                                        </div>
+                                        <span class="fw-bold small text-dark">Facture Électricité - Bureau</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge-category badge-charge">Charge</span></td>
+                                <td class="small text-secondary"><i class="bi bi-receipt me-1"></i> Prélèvement</td>
+                                <td class="text-end fw-extrabold text-danger small">- 125.50 €</td>
+                                <td>
+                                    <span class="small fw-bold text-success">
+                                        <span class="d-inline-block bg-success rounded-circle me-1" style="width: 0.5rem; height: 0.5rem;"></span> Complété
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-link text-secondary p-1">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center p-4 border-top bg-light">
+                    <small class="text-secondary">Affichage de 1-10 sur 142 transactions</small>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="pagination-btn"><i class="bi bi-chevron-left small"></i></button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn">2</button>
+                        <button class="pagination-btn">3</button>
+                        <button class="pagination-btn"><i class="bi bi-chevron-right small"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Chart & Balance -->
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="stat-card position-relative overflow-hidden">
+                        <div class="position-relative" style="z-index: 1;">
+                            <h4 class="fw-bold mb-3">Analyse Comparative</h4>
+                            <p class="text-secondary small mb-4">Visualisez l'évolution de vos marges opérationnelles par rapport au trimestre précédent.</p>
+                            <div class="d-flex align-items-end gap-2" style="height: 12rem;">
+                                <div class="chart-bar bg-primary bg-opacity-50" style="height: 40%;" title="Jul"></div>
+                                <div class="chart-bar bg-primary" style="height: 65%;" title="Aug"></div>
+                                <div class="chart-bar bg-primary bg-opacity-50" style="height: 55%;" title="Sep"></div>
+                                <div class="chart-bar bg-primary" style="height: 90%;" title="Oct"></div>
+                                <div class="chart-bar bg-light" style="height: 20%;" title="Nov"></div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2 small text-secondary">
+                                <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="stat-card bg-primary text-white h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <i class="bi bi-wallet2 fs-2"></i>
+                                <span class="badge bg-white bg-opacity-25 small">Maîtrise du Cashflow</span>
+                            </div>
+                            <h4 class="h5 fw-bold mb-2">Solde Disponibilité</h4>
+                            <p class="text-white-50 small mb-4">Vos fonds disponibles pour de futurs investissements de stock.</p>
+                            <h2 class="fw-extrabold">18,500.25 €</h2>
+                        </div>
+                        <button class="btn btn-light text-primary fw-bold w-100 mt-3 py-2">
+                            Transférer des fonds
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- END: Main Content -->
+
+    <!-- BEGIN: Add Transaction Modal -->
+    <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content modal-content-custom">
+                <!-- Modal Header -->
+                <div class="modal-header bg-light border-bottom">
+                    <div>
+                        <h2 class="modal-title h5 fw-bold text-dark" id="addTransactionModalLabel">Ajouter une transaction</h2>
+                        <p class="small text-secondary mb-0">Saisissez les détails de votre flux financier.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <!-- Modal Body -->
+                <div class="modal-body p-4 overflow-auto" style="max-height: 60vh;">
+                    <form id="addTransactionForm">
+                        <!-- Transaction Type -->
+                        <div class="mb-4">
+                            <label class="form-label-custom d-block">Type de transaction</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <button type="button" class="btn-type-toggle active w-100" id="btnTypeRevenue" onclick="setTransactionType('revenue')">
+                                        <i class="bi bi-plus-circle"></i> Revenu
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn-type-toggle w-100" id="btnTypeExpense" onclick="setTransactionType('expense')">
+                                        <i class="bi bi-dash-circle"></i> Dépense
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <!-- Category -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom d-block">Catégorie</label>
+                                <select class="form-select form-select-custom" id="transactionCategory">
+                                    <option>Ventes</option>
+                                    <option>Inventaire / Stock</option>
+                                    <option>Loyer</option>
+                                    <option>Salaires</option>
+                                    <option>Marketing</option>
+                                    <option>Maintenance</option>
+                                    <option>Autre</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Date -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom d-block">Date</label>
+                                <input class="form-control form-control-custom" type="date" id="transactionDate"/>
+                            </div>
+                            
+                            <!-- Amount -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom d-block">Montant</label>
+                                <input class="form-control form-control-custom" placeholder="0.00" type="number" id="transactionAmount"/>
+                            </div>
+                            
+                            <!-- Currency -->
+                            <div class="col-md-6">
+                                <label class="form-label-custom d-block">Devise</label>
+                                <select class="form-select form-select-custom" id="transactionCurrency">
+                                    <option>FCFA (XAF)</option>
+                                    <option>Euro (€)</option>
+                                    <option>US Dollar ($)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Payment Method -->
+                            <div class="col-12">
+                                <label class="form-label-custom d-block">Mode de paiement</label>
+                                <div class="row g-2">
+                                    <div class="col-3">
+                                        <button type="button" class="btn-payment-method active w-100" onclick="selectPaymentMethod(this)">
+                                            <i class="bi bi-cash"></i> Espèces
+                                        </button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="button" class="btn-payment-method w-100" onclick="selectPaymentMethod(this)">
+                                            <i class="bi bi-phone"></i> Mobile Money
+                                        </button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="button" class="btn-payment-method w-100" onclick="selectPaymentMethod(this)">
+                                            <i class="bi bi-bank"></i> Virement
+                                        </button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="button" class="btn-payment-method w-100" onclick="selectPaymentMethod(this)">
+                                            <i class="bi bi-credit-card"></i> Carte
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Description -->
+                            <div class="col-12">
+                                <label class="form-label-custom d-block">Description</label>
+                                <textarea class="form-control form-control-custom" placeholder="Note ou référence supplémentaire..." rows="3" id="transactionDescription"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Modal Footer -->
+                <div class="modal-footer bg-light border-top">
+                    <button type="button" class="btn btn-outline-custom px-4" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary-custom d-flex align-items-center gap-2 px-4" id="btnSaveTransaction">
+                        Enregistrer la transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Add Transaction Modal -->
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript -->
+    <script>
+        // Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
+        }
+        
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 992) toggleSidebar();
+            });
+        });
+        
+        // Add Transaction Modal
+        const addTransactionModal = new bootstrap.Modal(document.getElementById('addTransactionModal'));
+        const addTransactionForm = document.getElementById('addTransactionForm');
+        
+        // Open modal from both buttons
+        document.getElementById('btnAddTransaction').addEventListener('click', () => addTransactionModal.show());
+        
+        // Reset form when modal is hidden
+        document.getElementById('addTransactionModal').addEventListener('hidden.bs.modal', () => {
+            addTransactionForm.reset();
+            // Reset type to revenue
+            setTransactionType('revenue');
+            // Reset payment method
+            document.querySelectorAll('.btn-payment-method').forEach((b, i) => {
+                b.classList.toggle('active', i === 0);
+            });
+        });
+        
+        // Transaction type toggle
+        let transactionType = 'revenue';
+        function setTransactionType(type) {
+            transactionType = type;
+            document.getElementById('btnTypeRevenue').classList.toggle('active', type === 'revenue');
+            document.getElementById('btnTypeExpense').classList.toggle('active', type === 'expense');
+        }
+        
+        // Payment method selection
+        function selectPaymentMethod(element) {
+            document.querySelectorAll('.btn-payment-method').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+        }
+        
+        // Save transaction
+        document.getElementById('btnSaveTransaction').addEventListener('click', function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            
+            // Show loading
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enregistrement...';
+            btn.disabled = true;
+            
+            // Collect data
+            const data = {
+                type: transactionType,
+                category: document.getElementById('transactionCategory').value,
+                date: document.getElementById('transactionDate').value,
+                amount: document.getElementById('transactionAmount').value,
+                currency: document.getElementById('transactionCurrency').value,
+                description: document.getElementById('transactionDescription').value
+            };
+            
+            console.log('Transaction enregistrée:', data);
+            
+            // Simulate save
+            setTimeout(() => {
+                btn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Enregistré !';
+                btn.classList.add('btn-success');
+                btn.classList.remove('btn-primary-custom');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-primary-custom');
+                    btn.disabled = false;
+                    addTransactionModal.hide();
+                    
+                    // Success toast
+                    const toast = document.createElement('div');
+                    toast.className = 'position-fixed bottom-0 end-0 m-4 p-3 bg-success text-white rounded-3 shadow-lg';
+                    toast.style.zIndex = '9999';
+                    toast.innerHTML = '<i class="bi bi-check-circle me-2"></i>Transaction ajoutée avec succès !';
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 3000);
+                }, 1500);
+            }, 800);
+        });
+        
+        // Chart bar tooltips
+        document.querySelectorAll('.chart-bar').forEach(bar => {
+            bar.addEventListener('mouseenter', function() {
+                this.style.opacity = '0.8';
+            });
+            bar.addEventListener('mouseleave', function() {
+                this.style.opacity = '1';
+            });
+        });
+        
+        // Pagination click
+        document.querySelectorAll('.pagination-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.pagination-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
